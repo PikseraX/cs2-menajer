@@ -35,10 +35,18 @@ function maasKutusu() {
 }
 
 function haftaGec() {
+  sezonHazirla();
+  const sz = kariyer.sezon;
+  if (!sz.bitti && !sz.oynandi) { alert("Önce bu haftanın maçını oyna."); return; }
   const g = haftalikGider();
   if (!confirm("Hafta bitecek ve " + para(g) + " maaş ödenecek. Onaylıyor musun?")) return;
   kariyer.butce -= g;
   kariyer.hafta = (kariyer.hafta || 1) + 1;
+  if (sz.oynandi) {
+    sz.oynandi = false;
+    sz.gun++;
+    if (sz.gun >= sz.fikstur.length) sz.bitti = true;
+  }
   const rapor = antrenmanUygula();
   const yasArtti = yasKontrol();
   kaydet();
