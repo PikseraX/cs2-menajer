@@ -142,15 +142,21 @@ function kariyerBaslat() {
 }
 
 function tabloHtml(oyuncular) {
-  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Rol</th><th>Yaş</th><th>NİŞ</th><th>BİL</th><th>REF</th><th>İLE</th><th>İST</th><th>BAS</th><th>GEN</th></tr>';
+  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Tarz</th><th>Yaş</th><th>NİŞ</th><th>BİL</th><th>REF</th><th>İLE</th><th>İST</th><th>BAS</th><th>GEN</th></tr>';
   oyuncular.forEach(function (o) {
-    html += "<tr><td>" + o.ad + "</td><td>" + o.rol + "</td><td>" + o.yas + "</td><td>" + o.nisan + "</td><td>" + o.bilgi + "</td><td>" + o.refleks + "</td><td>" + o.iletisim + "</td><td>" + o.istikrar + "</td><td>" + o.baski + '</td><td class="genel">' + o.genel + "</td></tr>";
+    const gerek = TARZLAR[o.rol] || [];
+    const h = function (z) {
+      const yesil = gerek.indexOf(z) >= 0 && o[z] >= YESIL_ESIK;
+      return "<td" + (yesil ? ' style="color:#22c55e;font-weight:bold"' : "") + ">" + o[z] + "</td>";
+    };
+    html += "<tr><td>" + o.ad + "</td><td>" + tarzYazi(o) + "</td><td>" + o.yas + "</td>" + h("nisan") + h("bilgi") + h("refleks") + h("iletisim") + h("istikrar") + h("baski") + '<td class="genel">' + o.genel + "</td></tr>";
   });
   return html + "</table></div>";
 }
 
 function kariyerEkrani() {
     rakipleriBagla();
+    tarzlariHazirla();
   let html = '<h1 style="color:' + kariyer.renk + '">' + kariyer.takimAdi + "</h1>";
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Galibiyet: <b>" + (kariyer.galibiyet || 0) + "</b> &nbsp; Mağlubiyet: <b>" + (kariyer.maglubiyet || 0) + "</b></div>";
   html += maasKutusu();
