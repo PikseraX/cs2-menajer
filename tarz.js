@@ -20,9 +20,7 @@ function yesilSayisi(o, tarz) {
 }
 
 function tarzEtkisi(o) {
-  let e = TARZ_ETKISI[yesilSayisi(o, o.rol)];
-  if (o.yan) e += Math.max(0, TARZ_ETKISI[yesilSayisi(o, o.yan)]) * 0.5;
-  return e;
+  return TARZ_ETKISI[yesilSayisi(o, o.rol)];
 }
 
 function takimEtkin(oyuncular) {
@@ -31,19 +29,14 @@ function takimEtkin(oyuncular) {
 }
 
 function tarzYazi(o) {
-  return o.rol + (o.yan ? " / " + o.yan : "");
+  return o.rol;
 }
 
-// Yan tarzı olmayan oyunculara yan tarz verir (eski kayıtlar dahil)
+// Eski kayıtlardaki yan tarzları temizler
 function tarzlariHazirla() {
   let degisti = false;
   function isle(o) {
-    if (o.yan === undefined || o.yan === o.rol) {
-      let y;
-      do { y = TARZ_LISTESI[Math.floor(Math.random() * TARZ_LISTESI.length)]; } while (y === o.rol);
-      o.yan = y;
-      degisti = true;
-    }
+    if (o.yan !== undefined) { delete o.yan; degisti = true; }
   }
   dunya.forEach(function (t) { t.oyuncular.forEach(isle); });
   kariyer.oyuncular.forEach(isle);
@@ -53,7 +46,7 @@ function tarzlariHazirla() {
 
 function tarzRehberi() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Tarz Rehberi</h2>';
-  html += "<p>Tarzın istediği özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0 yeşil " + TARZ_ETKISI[0] + ", 1 yeşil " + TARZ_ETKISI[1] + ", 2 yeşil +" + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + " takım gücü. Yan tarz sadece bonus verir (yarım etki).</p>";
+  html += "<p>Tarzın istediği özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0 yeşil " + TARZ_ETKISI[0] + ", 1 yeşil " + TARZ_ETKISI[1] + ", 2 yeşil +" + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + " takım gücü.</p>";
   TARZ_LISTESI.forEach(function (t) {
     html += '<div class="bilgi-kutusu"><b>' + t + "</b><br>" + TARZLAR[t].map(function (z) { return ODAK_ADLARI[z]; }).join(", ") + "</div>";
   });
