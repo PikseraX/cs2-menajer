@@ -16,7 +16,7 @@ function serbestOyuncuUret(ad) {
     o[z] = sinirla(g + (Math.random() * 20 - 10));
     toplam += o[z];
   }
-  o.genel = Math.round(toplam / OZELLIKLER.length);
+  genelHesapla(o);
   return o;
 }
 
