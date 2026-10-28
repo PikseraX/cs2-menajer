@@ -150,6 +150,7 @@ function kariyerEkrani() {
   let html = '<h1 style="color:' + kariyer.renk + '">' + kariyer.takimAdi + "</h1>";
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b></div>";
   html += "<h2>Kadro</h2>" + tabloHtml(kariyer.oyuncular);
+  html += '<button class="buton" onclick="macRakipSec()">Maç Oyna</button>';
   html += '<button class="buton ikincil" onclick="takimListesiGoster()">Rakip Takımlar</button>';
   html += '<button class="buton ikincil" onclick="anaMenu()">Ana Menü</button>';
   uygulama.innerHTML = html;
