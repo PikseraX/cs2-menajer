@@ -142,7 +142,7 @@ function kariyerBaslat() {
 }
 
 function tabloHtml(oyuncular) {
-  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Tarz</th><th>Yaş</th><th>NİŞ</th><th>BİL</th><th>REF</th><th>İLE</th><th>İST</th><th>BAS</th><th>GEN</th></tr>';
+  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Rol</th><th>Yaş</th><th>NİŞ</th><th>BİL</th><th>REF</th><th>İLE</th><th>İST</th><th>BAS</th><th>GEN</th></tr>';
   oyuncular.forEach(function (o) {
     const gerek = TARZLAR[o.rol] || [];
     const h = function (z) {
@@ -173,7 +173,10 @@ function kariyerEkrani() {
 
 function kadroEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Kadro</h2>';
-  html += kadroOzet(kariyer.oyuncular) + tabloHtml(kariyer.oyuncular);
+  html += kadroOzet(kariyer.oyuncular, kariyer.strateji) + tabloHtml(kariyer.oyuncular);
+  html += '<button class="buton" onclick="stratejiEkrani()">Strateji Belirle</button>';
+  html += '<button class="buton ikincil" onclick="stratejiRehberi()">Strateji Rehberi</button>';
+  html += '<button class="buton ikincil" onclick="rolRehberi()">Rol Rehberi</button>';
   uygulama.innerHTML = html;
 }
 
