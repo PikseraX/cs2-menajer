@@ -61,7 +61,7 @@ function sozlesmeEkrani() {
     const kalan = o.bitis - (kariyer.hafta || 1) + 1;
     const durum = kalan > 0 ? kalan + " hafta kaldı" : "SÖZLEŞME BİTTİ";
     const renk = kalan > 0 ? "" : ' style="border-color:#ef4444"';
-    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span>' + o.ad + " (" + durum + ")<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
+    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span style="text-align:left">' + o.ad + " (" + durum + ")<br>Yaş " + o.yas + " · GEN " + o.genel + " · " + o.rol + "<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
   });
   uygulama.innerHTML = html;
 }
