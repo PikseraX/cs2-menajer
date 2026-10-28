@@ -15,19 +15,16 @@ function dunyaSiralamaHazirla() {
 }
 
 // ligSirasi: sezon.js'teki siralama() sonucu (0 = sen, 1-7 = dunya[0..6])
-function siralamaGuncelle(ligSirasi) {
+function siralamaGuncelle(prim, benPrim) {
   dunyaSiralamaHazirla();
-  const prim = {};
-  ligSirasi.forEach(function (j, p) { prim[j] = LIG_PRIMI[p] || 0; });
   dunya.forEach(function (t, i) {
-    const ligNo = i + 1;
-    const p = ligNo <= 7 ? (prim[ligNo] || 0) : 0;
-    const sezonPuani = ortGuc(t.oyuncular) * 10 + Math.random() * 160 - 80 + p;
+    const sezonPuani = ortGuc(t.oyuncular) * 10 + Math.random() * 160 - 80 + (prim[i] || 0);
     t.puan = Math.round(t.puan * 0.4 + sezonPuani * 0.6);
   });
-  const benimSezon = ortGuc(kariyer.oyuncular) * 10 + Math.random() * 160 - 80 + (prim[0] || 0);
+  const benimSezon = ortGuc(kariyer.oyuncular) * 10 + Math.random() * 160 - 80 + benPrim;
   kariyer.puan = Math.round(kariyer.puan * 0.4 + benimSezon * 0.6);
 }
+
 function dunyaSirasi() {
   dunyaSiralamaHazirla();
   const liste = dunya.map(function (t, i) {
