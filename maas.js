@@ -1,3 +1,6 @@
+function formulMaas(o) { return Math.round(o.genel * o.genel / 2); }
+function temelMaas(o) { return o.maas !== undefined ? o.maas : formulMaas(o); }
+
 function sozlesmeHazirla() {
   const h = kariyer.hafta || 1;
   kariyer.oyuncular.forEach(function (o) {
@@ -10,8 +13,8 @@ function sozlesmeBitti(o) {
 }
 
 function maas(o) {
-  const baz = Math.round(o.genel * o.genel / 2);
-  return (o.bitis !== undefined && kariyer && sozlesmeBitti(o)) ? Math.round(baz * 1.25) : baz;
+  const baz = temelMaas(o);
+  return sozlesmeBitti(o) ? Math.round(baz * 1.25) : baz;
 }
 
 function haftalikGider() {
@@ -43,23 +46,25 @@ function haftaGec() {
 function sozlesmeEkrani() {
   sozlesmeHazirla();
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Sözleşmeler</h2>';
-  html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Hafta: <b>" + (kariyer.hafta || 1) + "</b><br>Yenileme: +26 hafta, 4 haftalık maaş</div>";
+  html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Hafta: <b>" + (kariyer.hafta || 1) + "</b><br>Yenileme: +26 hafta, 4 haftalık maaş ödenir, maaş %15 artar</div>";
   kariyer.oyuncular.forEach(function (o, i) {
     const kalan = o.bitis - (kariyer.hafta || 1) + 1;
     const durum = kalan > 0 ? kalan + " hafta kaldı" : "SÖZLEŞME BİTTİ";
     const renk = kalan > 0 ? "" : ' style="border-color:#ef4444"';
-    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span>' + o.ad + " (" + durum + ")</span><span>" + para(maas(o) * 4) + "</span></button>";
+    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span>' + o.ad + " (" + durum + ")<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
   });
   uygulama.innerHTML = html;
 }
 
 function sozlesmeYenile(i) {
   const o = kariyer.oyuncular[i];
-  const baz = Math.round(o.genel * o.genel / 2);
+  const baz = temelMaas(o);
   const ucret = baz * 4;
+  const yeniMaas = Math.round(baz * 1.15);
   if (kariyer.butce - ucret < 0) { alert("Bütçen yetersiz."); return; }
-  if (!confirm(o.ad + " için " + para(ucret) + " ödenecek, sözleşme 26 hafta uzayacak. Onaylıyor musun?")) return;
+  if (!confirm(o.ad + " için " + para(ucret) + " ödenecek. Maaşı " + para(baz) + " → " + para(yeniMaas) + " olacak, sözleşme 26 hafta uzayacak. Onaylıyor musun?")) return;
   kariyer.butce -= ucret;
+  o.maas = yeniMaas;
   const h = kariyer.hafta || 1;
   o.bitis = Math.max(o.bitis, h) + 26;
   kaydet();
