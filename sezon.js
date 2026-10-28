@@ -133,10 +133,12 @@ function tabloEkrani() {
 function sezonuKapat() {
   const sz = kariyer.sezon;
   if (!sz.bitti) return;
-  const sira = siralama().indexOf(0);
+  const ligSirasi = siralama();
+  const sira = ligSirasi.indexOf(0);
   const odul = SEZON_ODULLERI[sira];
   kariyer.butce += odul;
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1 });
+  siralamaGuncelle(ligSirasi);
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
   kaydet();
