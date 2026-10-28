@@ -30,8 +30,7 @@ function transferEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Transfer Piyasası</h2>';
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b></div>";
   kariyer.serbest.forEach(function (o, i) {
-    html += '<button class="takim-butonu" onclick="transferSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + ")</span><span>GEN " + o.genel + " · " + para(transferUcreti(o)) + "</span></button>";
-  });
+  html += '<button class="takim-butonu" onclick="transferSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + ")</span><span>GEN " + o.genel + " · " + para(transferUcreti(o)) + " · Maaş " + para(Math.round(o.genel * o.genel / 2)) + "</span></button>";
   uygulama.innerHTML = html;
 }
 
@@ -56,6 +55,7 @@ function transferYap(i, k) {
   if (!confirm(eski.ad + " satılacak, " + yeni.ad + " alınacak. Onaylıyor musun?")) return;
   kariyer.butce -= net;
   kariyer.oyuncular[k] = yeni;
+  yeni.bitis = (kariyer.hafta || 1) + 30;
   kariyer.serbest[i] = eski;
   kaydet();
   transferEkrani();
