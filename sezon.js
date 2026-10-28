@@ -3,8 +3,7 @@ const SEZON_ODULLERI = [150000, 100000, 60000, 30000, 15000, 10000, 5000, 5000];
 
 // 0 = senin takımın, 1-7 = dunya[0..6]
 function ligTakim(i) {
-  return i === 0 ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular } : dunya[i - 1];
-}
+    return i === 0 ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular, strateji: kariyer.strateji } : dunya[i - 1];
 
 function fiksturUret(n) {
   const t = [];
