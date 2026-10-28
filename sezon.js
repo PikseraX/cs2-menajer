@@ -66,8 +66,8 @@ function sezonKutusu() {
     h += "<br>Rakip: <b>" + rakip.ad + "</b> (Güç " + Math.round(ortGuc(rakip.oyuncular)) + ")";
     if (sz.oynandi) h += "<br>Bu haftanın maçı oynandı.";
     h += "</div>";
-    if (!sz.oynandi) h += '<button class="buton" onclick="sezonMaciOyna()">Maçı Oyna</button>';
-  }
+    if (!sz.oynandi) { h += '<button class="buton" onclick="sezonMaciOyna()">Maçı Oyna</button>'; }
+    else { h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>'; }
   h += '<button class="buton ikincil" onclick="tabloEkrani()">Puan Tablosu</button>';
   return h;
 }
