@@ -68,6 +68,7 @@ function sezonKutusu() {
     h += "</div>";
     if (!sz.oynandi) { h += '<button class="buton" onclick="sezonMaciOyna()">Maçı Oyna</button>'; }
     else { h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>'; }
+  }
   h += '<button class="buton ikincil" onclick="tabloEkrani()">Puan Tablosu</button>';
   return h;
 }
