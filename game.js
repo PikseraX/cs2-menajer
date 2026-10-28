@@ -158,6 +158,7 @@ function kariyerEkrani() {
   html += '<button class="buton" onclick="macRakipSec()">Maç Oyna</button>';
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="haftaGec()">Haftayı Bitir</button>';
+  html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
   html += '<button class="buton ikincil" onclick="takimListesiGoster()">Rakip Takımlar</button>';
   html += '<button class="buton ikincil" onclick="anaMenu()">Ana Menü</button>';
   uygulama.innerHTML = html;
