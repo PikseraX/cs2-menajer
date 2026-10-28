@@ -92,12 +92,14 @@ function rakipleriBagla() {
 }
 
 // Sezon sonu: tüm takımlar gelişir, rakipler transfer yapar.
-// Ekranda yalnızca ligdeki ilk 8 takım gösterilir.
+// Ekranda yalnızca senin yeni ligindeki takımlar gösterilir.
 function rakipSezonSonu() {
   rakipleriBagla();
   const haberler = [];
   const ozet = [];
+  const ligdekiler = kariyer.sezon.takimlar;
   dunya.forEach(function (t, ti) {
+    const ligde = ligdekiler.indexOf(ti) >= 0;
     const once = takimOrt(t);
     t.oyuncular.forEach(function (o) {
       rakipOyuncuGelistir(o, rastgeleEleman(OZELLIKLER));
@@ -111,12 +113,12 @@ function rakipSezonSonu() {
       const aday = rakipOyuncuUret(yeniAd(), zayif.rol, t.guc + Math.random() * 16 - 6);
       if (aday.genel >= zayif.genel + 3) {
         t.oyuncular[zi] = aday;
-        if (ti < 8) {
+        if (ligde) {
           haberler.push(t.ad + ": " + zayif.ad + " (GEN " + zayif.genel + ") ayrıldı, " + aday.ad + " (GEN " + aday.genel + ") geldi.");
         }
       }
     }
-    if (ti < 8) ozet.push({ ad: t.ad, once: once, sonra: takimOrt(t) });
+    if (ligde) ozet.push({ ad: t.ad, once: once, sonra: takimOrt(t) });
   });
   return { haberler: haberler, ozet: ozet };
 }
