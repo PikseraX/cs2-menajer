@@ -10,7 +10,7 @@ function oyuncuMaasi(o) { return o.maas !== undefined ? o.maas : Math.round(o.ge
 
 function serbestOyuncuUret(ad) {
   const g = 40 + Math.random() * 30;
-  const o = { ad: ad, rol: ROLLER[Math.floor(Math.random() * ROLLER.length)], yas: 17 + Math.floor(Math.random() * 14) };
+  const o = { ad: ad, rol: TARZ_LISTESI[Math.floor(Math.random() * TARZ_LISTESI.length)], yas: 17 + Math.floor(Math.random() * 14) };
   let toplam = 0;
   for (const z of OZELLIKLER) {
     o[z] = sinirla(g + (Math.random() * 20 - 10));
