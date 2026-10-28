@@ -95,7 +95,6 @@ function anaMenu() {
     html += '<button class="buton" onclick="kayitYukle()">Devam Et</button>';
   }
   html += '<button class="buton" onclick="yeniKariyerFormu()">Yeni Kariyer</button>';
-  html += '<button class="buton ikincil" onclick="takimListesiGoster()">Rakip Takımlar</button>';
   if (kayitVarMi()) {
     html += '<button class="buton tehlike" onclick="kayitSil()">Kariyeri Sil</button>';
   }
@@ -161,14 +160,13 @@ function kariyerEkrani() {
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
   html += '<button class="buton ikincil" onclick="odakEkrani()">Antrenman Odağı</button>';
-  html += '<button class="buton ikincil" onclick="takimListesiGoster()">Rakip Takımlar</button>';
   html += '<button class="buton ikincil" onclick="anaMenu()">Ana Menü</button>';
   uygulama.innerHTML = html;
 }
 
 function kadroEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Kadro</h2>';
-  html += tabloHtml(kariyer.oyuncular);
+  html += kadroOzet(kariyer.oyuncular) + tabloHtml(kariyer.oyuncular);
   uygulama.innerHTML = html;
 }
 
