@@ -1,15 +1,15 @@
-const YESIL_ESIK = 60;
-const TARZ_ETKISI = [-4, 0, 2, 4]; // 0, 1, 2, 3 yeşil özellik
+const YESIL_ESIK = 62;
+const TARZ_ETKISI = [-4, -4, -1, 2, 4]; // 0..4 yeşil özellik
 
 const TARZLAR = {
-  "Lider": ["iletisim", "bilgi", "baski"],
-  "Yıldız": ["nisan", "refleks", "baski"],
-  "Destek": ["iletisim", "istikrar", "bilgi"],
-  "Giriş": ["refleks", "nisan", "baski"],
-  "Sniper": ["nisan", "istikrar", "refleks"],
-  "Lurker": ["bilgi", "istikrar", "baski"],
-  "Anchor": ["istikrar", "bilgi", "baski"],
-  "Taktisyen": ["bilgi", "iletisim", "istikrar"]
+  "Lider": ["liderlik", "iletisim", "karar", "bilgi"],
+  "Yıldız": ["nisan", "refleks", "baski", "sprey"],
+  "Destek": ["utility", "takimoyunu", "iletisim", "istikrar"],
+  "Giriş": ["refleks", "nisan", "pozisyon", "baski"],
+  "Sniper": ["nisan", "refleks", "pozisyon", "istikrar"],
+  "Lurker": ["bilgi", "pozisyon", "karar", "istikrar"],
+  "Anchor": ["pozisyon", "istikrar", "utility", "baski"],
+  "Taktisyen": ["bilgi", "karar", "iletisim", "takimoyunu"]
 };
 const TARZ_LISTESI = Object.keys(TARZLAR);
 
@@ -32,21 +32,47 @@ function tarzYazi(o) {
   return o.rol;
 }
 
-// Eski kayıtlardaki yan tarzları temizler
+function yakin(a, b) {
+  return sinirla((a + b) / 2 + Math.random() * 8 - 4);
+}
+
+// Eski 6 özellikten yeni 6 özelliği türetir
+function yeniOzellikleriTuret(o) {
+  if (o.sprey !== undefined) return;
+  o.sprey = yakin(o.nisan, o.istikrar);
+  o.karar = yakin(o.bilgi, o.baski);
+  o.pozisyon = yakin(o.bilgi, o.istikrar);
+  o.liderlik = yakin(o.iletisim, o.bilgi);
+  o.takimoyunu = yakin(o.iletisim, o.istikrar);
+  o.utility = yakin(o.bilgi, o.refleks);
+}
+
+function tumOyuncular() {
+  let l = [];
+  dunya.forEach(function (t) { l = l.concat(t.oyuncular); });
+  l = l.concat(kariyer.oyuncular);
+  if (kariyer.serbest) l = l.concat(kariyer.serbest);
+  return l;
+}
+
+// Eski kayıtları ve yan tarzları düzeltir, GEN'i role göre yeniden hesaplar
 function tarzlariHazirla() {
   let degisti = false;
-  function isle(o) {
+  tumOyuncular().forEach(function (o) {
     if (o.yan !== undefined) { delete o.yan; degisti = true; }
+    if (o.sprey === undefined) { yeniOzellikleriTuret(o); degisti = true; }
+  });
+  if (kariyer.ozV !== 2) {
+    tumOyuncular().forEach(genelHesapla);
+    kariyer.ozV = 2;
+    degisti = true;
   }
-  dunya.forEach(function (t) { t.oyuncular.forEach(isle); });
-  kariyer.oyuncular.forEach(isle);
-  if (kariyer.serbest) kariyer.serbest.forEach(isle);
   if (degisti) kaydet();
 }
 
 function rolRehberi() {
   let html = '<button class="geri" onclick="kadroEkrani()">← Geri</button><h2>Rol Rehberi</h2>';
-  html += "<p>Rolün istediği özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0 yeşil " + TARZ_ETKISI[0] + ", 1 yeşil " + TARZ_ETKISI[1] + ", 2 yeşil +" + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + " takım gücü.</p>";
+  html += "<p>Rolün istediği 4 özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0-1 yeşil " + TARZ_ETKISI[0] + ", 2 yeşil " + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + ", 4 yeşil +" + TARZ_ETKISI[4] + " takım gücü. Ayrıca GEN, rolün 4 özelliğine %70, diğer 8 özelliğe %30 ağırlık verir. Yanlış rolde oynayan oyuncunun GEN'i düşer ve maçta daha az öldürme alır.</p>";
   TARZ_LISTESI.forEach(function (t) {
     html += '<div class="bilgi-kutusu"><b>' + t + "</b><br>" + TARZLAR[t].map(function (z) { return ODAK_ADLARI[z]; }).join(", ") + "</div>";
   });
