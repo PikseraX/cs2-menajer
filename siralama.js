@@ -14,16 +14,6 @@ function dunyaSiralamaHazirla() {
   if (degisti) kaydet();
 }
 
-function dunyaSirasi() {
-  dunyaSiralamaHazirla();
-  const liste = dunya.map(function (t) {
-    return { ad: t.ad, puan: t.puan, guc: Math.round(ortGuc(t.oyuncular)), ben: false };
-  });
-  liste.push({ ad: kariyer.takimAdi, puan: kariyer.puan, guc: Math.round(ortGuc(kariyer.oyuncular)), ben: true });
-  liste.sort(function (a, b) { return b.puan - a.puan; });
-  return liste;
-}
-
 // ligSirasi: sezon.js'teki siralama() sonucu (0 = sen, 1-7 = dunya[0..6])
 function siralamaGuncelle(ligSirasi) {
   dunyaSiralamaHazirla();
@@ -38,17 +28,26 @@ function siralamaGuncelle(ligSirasi) {
   const benimSezon = ortGuc(kariyer.oyuncular) * 10 + Math.random() * 160 - 80 + (prim[0] || 0);
   kariyer.puan = Math.round(kariyer.puan * 0.4 + benimSezon * 0.6);
 }
+function dunyaSirasi() {
+  dunyaSiralamaHazirla();
+  const liste = dunya.map(function (t, i) {
+    return { ad: t.ad, puan: t.puan, guc: Math.round(ortGuc(t.oyuncular)), ben: false, idx: i };
+  });
+  liste.push({ ad: kariyer.takimAdi, puan: kariyer.puan, guc: Math.round(ortGuc(kariyer.oyuncular)), ben: true, idx: -1 });
+  liste.sort(function (a, b) { return b.puan - a.puan; });
+  return liste;
+}
 
 function siralamaEkrani() {
   const l = dunyaSirasi();
   let benim = 0;
   l.forEach(function (x, i) { if (x.ben) benim = i + 1; });
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Dünya Sıralaması</h2>';
-  html += '<div class="bilgi-kutusu">Senin sıran: <b>' + benim + ". / " + l.length + "</b><br>Puan: <b>" + kariyer.puan + "</b></div>";
+  html += '<div class="bilgi-kutusu">Senin sıran: <b>' + benim + ". / " + l.length + "</b><br>Puan: <b>" + kariyer.puan + "</b><br>Kadro görmek için takıma bas.</div>";
   html += '<div class="tablo-kutusu"><table><tr><th>Takım</th><th>Güç</th><th>Puan</th></tr>';
   l.forEach(function (x, i) {
     const stil = x.ben ? ' style="color:' + kariyer.renk + ';font-weight:bold"' : "";
-    html += "<tr" + stil + "><td>" + (i + 1) + ". " + x.ad + "</td><td>" + x.guc + "</td><td>" + x.puan + "</td></tr>";
+    html += "<tr" + stil + ' onclick="takimKadro(' + x.idx + ", 'siralamaEkrani()')\"><td>" + (i + 1) + ". " + x.ad + "</td><td>" + x.guc + "</td><td>" + x.puan + "</td></tr>";
   });
   html += "</table></div>";
   uygulama.innerHTML = html;
