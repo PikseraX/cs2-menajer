@@ -6,6 +6,7 @@ const SERBEST_ADLAR = [
 
 function transferUcreti(o) { return o.genel * o.genel * 40; }
 function satisFiyati(o) { return Math.round(transferUcreti(o) * 0.6); }
+function oyuncuMaasi(o) { return o.maas !== undefined ? o.maas : Math.round(o.genel * o.genel / 2); }
 
 function serbestOyuncuUret(ad) {
   const g = 40 + Math.random() * 30;
@@ -30,7 +31,8 @@ function transferEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Transfer Piyasası</h2>';
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b></div>";
   kariyer.serbest.forEach(function (o, i) {
-  html += '<button class="takim-butonu" onclick="transferSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + ")</span><span>GEN " + o.genel + " · " + para(transferUcreti(o)) + " · Maaş " + para(Math.round(o.genel * o.genel / 2)) + "</span></button>";
+    html += '<button class="takim-butonu" onclick="transferSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + ")</span><span>GEN " + o.genel + " · " + para(transferUcreti(o)) + " · Maaş " + para(oyuncuMaasi(o)) + "</span></button>";
+  });
   uygulama.innerHTML = html;
 }
 
@@ -54,8 +56,8 @@ function transferYap(i, k) {
   if (kariyer.butce - net < 0) { alert("Bütçen yetersiz."); return; }
   if (!confirm(eski.ad + " satılacak, " + yeni.ad + " alınacak. Onaylıyor musun?")) return;
   kariyer.butce -= net;
-  kariyer.oyuncular[k] = yeni;
   yeni.bitis = (kariyer.hafta || 1) + 30;
+  kariyer.oyuncular[k] = yeni;
   kariyer.serbest[i] = eski;
   kaydet();
   transferEkrani();
