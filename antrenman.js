@@ -1,12 +1,18 @@
 const ODAK_ADLARI = {
-  nisan: "Nişan", bilgi: "Oyun Bilgisi", refleks: "Refleks",
-  iletisim: "İletişim", istikrar: "İstikrar", baski: "Baskı"
+  nisan: "Nişan", sprey: "Sprey Kontrolü", refleks: "Refleks",
+  bilgi: "Oyun Bilgisi", karar: "Karar Verme", pozisyon: "Pozisyon Alma",
+  iletisim: "İletişim", liderlik: "Liderlik", takimoyunu: "Takım Oyunu", utility: "Utility Kullanımı",
+  istikrar: "İstikrar", baski: "Baskı Altında Performans"
 };
 
 function genelHesapla(o) {
-  let t = 0;
-  OZELLIKLER.forEach(function (z) { t += o[z]; });
-  o.genel = Math.round(t / OZELLIKLER.length);
+  const gerek = TARZLAR[o.rol] || [];
+  let a = 0, an = 0, b = 0, bn = 0;
+  OZELLIKLER.forEach(function (z) {
+    if (gerek.indexOf(z) >= 0) { a += o[z]; an++; } else { b += o[z]; bn++; }
+  });
+  if (an === 0 || bn === 0) { o.genel = Math.round((a + b) / (an + bn)); return; }
+  o.genel = Math.round(0.7 * a / an + 0.3 * b / bn);
 }
 
 function gelisimSansi(o, odak) {
