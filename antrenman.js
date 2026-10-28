@@ -45,6 +45,7 @@ function yasKontrol() {
   if (h % 52 === 1 && h > 1) {
     kariyer.oyuncular.forEach(function (o) { o.yas++; });
     if (kariyer.serbest) kariyer.serbest.forEach(function (o) { o.yas++; });
+    dunya.forEach(function (t) { t.oyuncular.forEach(function (o) { o.yas++; }); });
     return true;
   }
   return false;
