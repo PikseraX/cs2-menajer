@@ -28,7 +28,7 @@ function karistir(d) {
 
 function macOyna(A, B) {
   const fark = ortGuc(A.oyuncular) - ortGuc(B.oyuncular);
-  const p = Math.min(0.8, Math.max(0.2, 1 / (1 + Math.exp(-fark / 15))));
+const p = Math.min(0.7, Math.max(0.3, 1 / (1 + Math.exp(-fark / 40))));
   const ist = function (t) {
     return t.oyuncular.map(function (o) { return { o: o, kill: 0, death: 0 }; });
   };
