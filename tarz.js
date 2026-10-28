@@ -23,9 +23,9 @@ function tarzEtkisi(o) {
   return TARZ_ETKISI[yesilSayisi(o, o.rol)];
 }
 
-function takimEtkin(oyuncular) {
+function takimEtkin(oyuncular, strateji) {
   const t = oyuncular.reduce(function (s, o) { return s + tarzEtkisi(o); }, 0) / oyuncular.length;
-  return ortGuc(oyuncular) + t;
+  return ortGuc(oyuncular) + t + stratejiEtkisi(oyuncular, strateji);
 }
 
 function tarzYazi(o) {
@@ -44,9 +44,9 @@ function tarzlariHazirla() {
   if (degisti) kaydet();
 }
 
-function tarzRehberi() {
-  let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Tarz Rehberi</h2>';
-  html += "<p>Tarzın istediği özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0 yeşil " + TARZ_ETKISI[0] + ", 1 yeşil " + TARZ_ETKISI[1] + ", 2 yeşil +" + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + " takım gücü.</p>";
+function rolRehberi() {
+  let html = '<button class="geri" onclick="kadroEkrani()">← Geri</button><h2>Rol Rehberi</h2>';
+  html += "<p>Rolün istediği özellik " + YESIL_ESIK + " ve üzerindeyse yeşil yanar. Oyuncu başına etki: 0 yeşil " + TARZ_ETKISI[0] + ", 1 yeşil " + TARZ_ETKISI[1] + ", 2 yeşil +" + TARZ_ETKISI[2] + ", 3 yeşil +" + TARZ_ETKISI[3] + " takım gücü.</p>";
   TARZ_LISTESI.forEach(function (t) {
     html += '<div class="bilgi-kutusu"><b>' + t + "</b><br>" + TARZLAR[t].map(function (z) { return ODAK_ADLARI[z]; }).join(", ") + "</div>";
   });
