@@ -1,7 +1,8 @@
 function kadroOzet(oyuncular) {
   const y = oyuncular.reduce(function (s, o) { return s + o.yas; }, 0) / oyuncular.length;
   const g = oyuncular.reduce(function (s, o) { return s + o.genel; }, 0) / oyuncular.length;
-  return '<div class="bilgi-kutusu">Ortalama yaş: <b>' + y.toFixed(1) + "</b><br>Ortalama GEN: <b>" + g.toFixed(1) + "</b></div>";
+  const e = takimEtkin(oyuncular) - ortGuc(oyuncular);
+  return '<div class="bilgi-kutusu">Ortalama yaş: <b>' + y.toFixed(1) + "</b><br>Ortalama GEN: <b>" + g.toFixed(1) + "</b><br>Tarz etkisi: <b>" + (e > 0 ? "+" : "") + e.toFixed(1) + '</b></div><button class="buton ikincil" onclick="tarzRehberi()">Tarz Rehberi</button>';
 }
 
 // i = -1: senin takımın, diğerleri dunya[i]
