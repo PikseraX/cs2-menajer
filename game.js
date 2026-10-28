@@ -130,6 +130,9 @@ function kariyerBaslat() {
     takimAdi: ad,
     renk: secilenRenk,
     butce: BASLANGIC_BUTCE,
+    galibiyet: 0,
+    maglubiyet: 0,
+
     oyuncular: ROLLER.map(function (rol, i) {
       return oyuncuUret(BASLANGIC_ADLARI[i], rol, BASLANGIC_GUC);
     })
