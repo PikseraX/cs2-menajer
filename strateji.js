@@ -51,6 +51,7 @@ function stratejiUygula(t) {
       if (rolUygunluk(o, rol) > rolUygunluk(bos[en], rol)) en = i;
     });
     bos[en].rol = rol;
+    genelHesapla(bos[en]);
     bos.splice(en, 1);
   });
 }
