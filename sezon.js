@@ -138,7 +138,7 @@ function sezonuKapat() {
   kariyer.butce += odul;
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1 });
   kariyer.sezon = yeniSezon(sz.no + 1);
+  const r = rakipSezonSonu();
   kaydet();
-  alert("Sezon " + sz.no + " bitti. Sıralaman: " + (sira + 1) + ". Ödül: " + para(odul));
-  kariyerEkrani();
+  sezonSonuEkrani(sz.no, sira + 1, odul, r);
 }
