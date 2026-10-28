@@ -121,17 +121,17 @@ function rakipSezonSonu() {
   return { haberler: haberler, ozet: ozet };
 }
 
-function sezonSonuEkrani(no, sira, odul, r) {
+function sezonSonuEkrani(no, sira, odul, r, sonuc) {
   let html = "<h2>Sezon " + no + " Bitti</h2>";
-  html += '<div class="bilgi-kutusu">Sıralaman: <b>' + sira + ".</b><br>Sezon ödülü: <b>+" + para(odul) + "</b></div>";
-  html += "<h2>Lig Takımlarının Gücü</h2>";
+  html += '<div class="bilgi-kutusu">Sıralaman: <b>' + sira + ".</b><br><b>" + sonuc.mesaj + "</b><br>Sezon ödülü: <b>+" + para(odul) + "</b></div>";
+  html += "<h2>Yeni Ligindeki Takımların Gücü</h2>";
   html += '<div class="tablo-kutusu"><table><tr><th>Takım</th><th>Önce</th><th>Sonra</th><th>Fark</th></tr>';
   r.ozet.forEach(function (x) {
     const f = x.sonra - x.once;
     html += "<tr><td>" + x.ad + "</td><td>" + x.once + "</td><td>" + x.sonra + "</td><td>" + (f > 0 ? "+" : "") + f + "</td></tr>";
   });
   html += "</table></div><h2>Lig Transferleri</h2>";
-  if (r.haberler.length === 0) html += "<p>Bu sezon ligdeki rakipler transfer yapmadı.</p>";
+  if (r.haberler.length === 0) html += "<p>Bu sezon ligindeki rakipler transfer yapmadı.</p>";
   r.haberler.forEach(function (h) { html += "<p>" + h + "</p>"; });
   html += '<button class="buton" onclick="kariyerEkrani()">Yeni Sezona Başla</button>';
   uygulama.innerHTML = html;
