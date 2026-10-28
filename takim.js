@@ -9,6 +9,7 @@ function kadroOzet(oyuncular) {
 function takimKadro(i, geri) {
   const t = i === -1 ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular } : dunya[i];
   let html = '<button class="geri" onclick="' + geri + '">← Geri</button><h2>' + t.ad + "</h2>";
+  if (t.strateji) html += '<div class="bilgi-kutusu">Strateji: <b>' + t.strateji + "</b></div>";
   html += kadroOzet(t.oyuncular) + tabloHtml(t.oyuncular);
   uygulama.innerHTML = html;
 }
