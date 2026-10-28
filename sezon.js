@@ -121,10 +121,12 @@ function tabloEkrani() {
   sezonHazirla();
   const t = kariyer.sezon.tablo;
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Sezon ' + kariyer.sezon.no + " Puan Tablosu</h2>";
+  html += "<p>Kadro görmek için takıma bas.</p>";
   html += '<div class="tablo-kutusu"><table><tr><th>Takım</th><th>O</th><th>G</th><th>M</th><th>RF</th><th>P</th></tr>';
   siralama().forEach(function (i, sira) {
     const stil = i === 0 ? ' style="color:' + kariyer.renk + ';font-weight:bold"' : "";
-    html += "<tr" + stil + "><td>" + (sira + 1) + ". " + ligTakim(i).ad + "</td><td>" + t[i].o + "</td><td>" + t[i].g + "</td><td>" + t[i].m + "</td><td>" + t[i].rd + "</td><td>" + t[i].puan + "</td></tr>";
+    const idx = i === 0 ? -1 : i - 1;
+    html += "<tr" + stil + ' onclick="takimKadro(' + idx + ", 'tabloEkrani()')\"><td>" + (sira + 1) + ". " + ligTakim(i).ad + "</td><td>" + t[i].o + "</td><td>" + t[i].g + "</td><td>" + t[i].m + "</td><td>" + t[i].rd + "</td><td>" + t[i].puan + "</td></tr>";
   });
   html += "</table></div>";
   uygulama.innerHTML = html;
