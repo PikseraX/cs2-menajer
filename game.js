@@ -182,6 +182,7 @@ function kadroEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Kadro</h2>';
   html += kadroOzet(kariyer.oyuncular, kariyer.strateji) + tabloHtml(kariyer.oyuncular);
   html += '<button class="buton" onclick="stratejiEkrani()">Strateji Belirle</button>';
+  html += '<button class="buton ikincil" onclick="istatistikEkrani()">İstatistikler</button>';
   html += '<button class="buton ikincil" onclick="stratejiRehberi()">Strateji Rehberi</button>';
   html += '<button class="buton ikincil" onclick="rolRehberi()">Rol Rehberi</button>';
   uygulama.innerHTML = html;
