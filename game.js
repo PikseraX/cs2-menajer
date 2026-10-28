@@ -142,14 +142,21 @@ function kariyerBaslat() {
 }
 
 function tabloHtml(oyuncular) {
-  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Rol</th><th>Yaş</th><th>NİŞ</th><th>BİL</th><th>REF</th><th>İLE</th><th>İST</th><th>BAS</th><th>GEN</th></tr>';
+  const basliklar = [["nisan", "NİŞ"], ["sprey", "SPR"], ["refleks", "REF"], ["bilgi", "BİL"], ["karar", "KAR"], ["pozisyon", "POZ"], ["iletisim", "İLE"], ["liderlik", "LİD"], ["takimoyunu", "TOP"], ["utility", "UTL"], ["istikrar", "İST"], ["baski", "BAS"]];
+  let html = '<div class="tablo-kutusu"><table><tr><th>Oyuncu</th><th>Rol</th><th>Yaş</th><th>GEN</th>';
+  basliklar.forEach(function (b) { html += "<th>" + b[1] + "</th>"; });
+  html += "</tr>";
   oyuncular.forEach(function (o) {
     const gerek = TARZLAR[o.rol] || [];
-    const h = function (z) {
+    html += "<tr><td>" + o.ad + "</td><td>" + o.rol + "</td><td>" + o.yas + '</td><td class="genel">' + o.genel + "</td>";
+    basliklar.forEach(function (b) {
+      const z = b[0];
       const yesil = gerek.indexOf(z) >= 0 && o[z] >= YESIL_ESIK;
-      return "<td" + (yesil ? ' style="color:#22c55e;font-weight:bold"' : "") + ">" + o[z] + "</td>";
-    };
-    html += "<tr><td>" + o.ad + "</td><td>" + tarzYazi(o) + "</td><td>" + o.yas + "</td>" + h("nisan") + h("bilgi") + h("refleks") + h("iletisim") + h("istikrar") + h("baski") + '<td class="genel">' + o.genel + "</td></tr>";
+      const gerekli = gerek.indexOf(z) >= 0;
+      const stil = yesil ? ' style="color:#22c55e;font-weight:bold"' : (gerekli ? ' style="color:#f59e0b"' : "");
+      html += "<td" + stil + ">" + (o[z] === undefined ? "-" : o[z]) + "</td>";
+    });
+    html += "</tr>";
   });
   return html + "</table></div>";
 }
