@@ -2,12 +2,16 @@ function ortGuc(oyuncular) {
   return oyuncular.reduce(function (s, o) { return s + o.genel; }, 0) / oyuncular.length;
 }
 
+function agirlikPuani(o) {
+  return Math.pow(o.nisan + o.refleks, 3);
+}
+
 function agirlikliSec(liste) {
   let toplam = 0;
-  liste.forEach(function (x) { toplam += x.o.nisan + x.o.refleks; });
+  liste.forEach(function (x) { toplam += agirlikPuani(x.o); });
   let r = Math.random() * toplam;
   for (const x of liste) {
-    r -= x.o.nisan + x.o.refleks;
+    r -= agirlikPuani(x.o);
     if (r <= 0) return x;
   }
   return liste[liste.length - 1];
