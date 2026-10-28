@@ -3,7 +3,7 @@ function ortGuc(oyuncular) {
 }
 
 function agirlikPuani(o) {
-  return Math.pow(o.nisan + o.refleks, 3);
+  return Math.pow(o.nisan + o.refleks, 3) * (1 + 0.08 * (yesilSayisi(o, o.rol) - 2));
 }
 
 function agirlikliSec(liste) {
