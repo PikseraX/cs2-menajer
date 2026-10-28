@@ -12,7 +12,7 @@ const TAKIMLAR = [
 
 const ROLLER = ["Lider", "Yıldız", "Destek", "Giriş", "Sniper"];
 
-const OZELLIKLER = ["nisan", "bilgi", "refleks", "iletisim", "istikrar", "baski"];
+const OZELLIKLER = ["nisan", "sprey", "refleks", "bilgi", "karar", "pozisyon", "iletisim", "liderlik", "takimoyunu", "utility", "istikrar", "baski"];
 
 const OYUNCU_ADLARI = [
   "Zefir", "Kobra", "Atlas", "Rüzgar", "Tufan", "Şimşek", "Gölge", "Bora", "Ateş", "Çınar",
