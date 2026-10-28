@@ -72,7 +72,14 @@ function macRakipSec() {
 function macBaslat(i) {
   const A = { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular };
   const B = dunya[i];
-  macRaporu(A, B, macOyna(A, B));
+  const s = macOyna(A, B);
+  const kazandi = s.sa > s.sb;
+  const odul = kazandi ? 20000 : 5000;
+  kariyer.butce += odul;
+  if (kazandi) { kariyer.galibiyet = (kariyer.galibiyet || 0) + 1; }
+  else { kariyer.maglubiyet = (kariyer.maglubiyet || 0) + 1; }
+  kaydet();
+  macRaporu(A, B, s, odul);
 }
 
 function istTablo(ad, ist) {
@@ -85,12 +92,13 @@ function istTablo(ad, ist) {
   return h + "</table></div>";
 }
 
-function macRaporu(A, B, s) {
+function macRaporu(A, B, s, odul) {
   const kazandi = s.sa > s.sb;
   let html = "<h2>Maç Raporu</h2>";
   html += '<div class="bilgi-kutusu"><b>' + A.ad + " " + s.sa + " - " + s.sb + " " + B.ad + "</b><br>";
   html += kazandi ? "Kazandın!" : "Kaybettin.";
   html += s.uzatma ? " (Uzatma oynandı)" : "";
+  html += "<br>Kazanç: <b>+" + para(odul) + "</b>";
   html += "</div>";
   html += istTablo(A.ad, s.istA) + istTablo(B.ad, s.istB);
   html += '<button class="buton" onclick="macRakipSec()">Başka Maç</button>';
