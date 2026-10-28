@@ -98,6 +98,7 @@ function sezonMaciOyna() {
   if (kazandi) { kariyer.galibiyet = (kariyer.galibiyet || 0) + 1; }
   else { kariyer.maglubiyet = (kariyer.maglubiyet || 0) + 1; }
   sz.oynandi = true;
+  macIstatistikIsle(benim.s.istA);
   kaydet();
   sezonMacRaporu(benim.rakip, benim.s, odul, digerleri);
 }
@@ -139,7 +140,7 @@ function sezonuKapat() {
   const sira = ligSirasi.indexOf(0);
   const odul = SEZON_ODULLERI[sira];
   kariyer.butce += odul;
-  (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1 });
+  (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1, mvp: sezonEnIyi(sz.no) });
   siralamaGuncelle(ligSirasi);
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
