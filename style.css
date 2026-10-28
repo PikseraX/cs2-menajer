@@ -32,3 +32,44 @@ table { border-collapse: collapse; width: 100%; font-size: 14px; }
 th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #374151; white-space: nowrap; }
 th:first-child, td:first-child { text-align: left; }
 .genel { font-weight: bold; color: #f59e0b; }
+.buton {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 16px;
+  font-size: 17px;
+  border: 0;
+  border-radius: 8px;
+  background: #f59e0b;
+  color: #111827;
+}
+.buton.ikincil { background: #374151; color: #f9fafb; }
+.buton.tehlike { background: #991b1b; color: #f9fafb; }
+.alan {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  font-size: 16px;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #f9fafb;
+  margin-bottom: 8px;
+}
+.renk {
+  width: 44px;
+  height: 44px;
+  margin-right: 8px;
+  margin-bottom: 16px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+}
+.renk.secili { border-color: #f9fafb; }
+.bilgi-kutusu {
+  padding: 14px;
+  margin-bottom: 8px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  font-size: 17px;
+}
