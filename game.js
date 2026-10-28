@@ -171,6 +171,7 @@ function kariyerEkrani() {
   html += sezonKutusu();
   html += '<button class="buton ikincil" onclick="kadroEkrani()">Kadro</button>';
   html += '<button class="buton ikincil" onclick="siralamaEkrani()">Dünya Sıralaması</button>';
+  html += '<button class="buton ikincil" onclick="ligEkrani()">Ligler</button>';
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
   html += '<button class="buton ikincil" onclick="odakEkrani()">Antrenman Odağı</button>';
