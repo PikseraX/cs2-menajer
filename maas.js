@@ -39,8 +39,10 @@ function haftaGec() {
   if (!confirm("Hafta bitecek ve " + para(g) + " maaş ödenecek. Onaylıyor musun?")) return;
   kariyer.butce -= g;
   kariyer.hafta = (kariyer.hafta || 1) + 1;
+  const rapor = antrenmanUygula();
+  const yasArtti = yasKontrol();
   kaydet();
-  kariyerEkrani();
+  haftaRaporu(g, rapor, yasArtti);
 }
 
 function sozlesmeEkrani() {
