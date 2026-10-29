@@ -48,6 +48,7 @@ function haftaGec() {
     if (sz.gun >= sz.fikstur.length) sz.bitti = true;
   }
   const rapor = antrenmanUygula();
+  haritaAntrenmaniUygula(rapor);
   const yasArtti = yasKontrol();
   kaydet();
   haftaRaporu(g, rapor, yasArtti);
