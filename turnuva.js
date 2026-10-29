@@ -110,9 +110,11 @@ function turnuvaDevam() {
 function seriOyna(A, B) {
   let a = 0, b = 0;
   const haritalar = [];
+  const liste = karistir(HARITALAR);
   while (a < 2 && b < 2) {
-    const s = macOyna(A, B);
-    haritalar.push(s.sa + "-" + s.sb);
+    const hr = liste[haritalar.length];
+    const s = macOyna(A, B, hr);
+    haritalar.push(hr + " " + s.sa + "-" + s.sb);
     if (s.sa > s.sb) a++; else b++;
   }
   return { a: a, b: b, haritalar: haritalar };
