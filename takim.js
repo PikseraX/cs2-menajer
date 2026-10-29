@@ -15,6 +15,6 @@ function kadroOzet(oyuncular, strateji) {
 function takimKadro(i, geri) {
   const t = i === -1 ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular, strateji: kariyer.strateji } : dunya[i];
   let html = '<button class="geri" onclick="' + geri + '">← Geri</button><h2>' + t.ad + "</h2>";
-  html += kadroOzet(t.oyuncular, t.strateji) + tabloHtml(t.oyuncular);
+  html += kadroOzet(t.oyuncular, t.strateji) + tabloHtml(t.oyuncular) + haritaTablosu(t);
   uygulama.innerHTML = html;
 }
