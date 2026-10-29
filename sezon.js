@@ -89,7 +89,7 @@ function sezonMaciOyna() {
     if (a === 0) {
       benim = { rakip: B, s: s };
     } else if (b === 0) {
-      benim = { rakip: A, s: { sa: s.sb, sb: s.sa, istA: s.istB, istB: s.istA, uzatma: s.uzatma } };
+      benim = { rakip: A, s: { sa: s.sb, sb: s.sa, istA: s.istB, istB: s.istA, uzatma: s.uzatma, harita: s.harita } };
     } else {
       digerleri.push(A.ad + " " + s.sa + " - " + s.sb + " " + B.ad);
     }
@@ -111,6 +111,7 @@ function sezonMacRaporu(B, s, odul, digerleri) {
   html += '<div class="bilgi-kutusu"><b>' + kariyer.takimAdi + " " + s.sa + " - " + s.sb + " " + B.ad + "</b><br>";
   html += kazandi ? "Kazandın!" : "Kaybettin.";
   html += s.uzatma ? " (Uzatma oynandı)" : "";
+  html += "<br>Harita: <b>" + s.harita + "</b>";
   html += "<br>Kazanç: <b>+" + para(odul) + "</b></div>";
   html += "<h2>Haftanın Diğer Maçları</h2>";
   digerleri.forEach(function (d) { html += "<p>" + d + "</p>"; });
