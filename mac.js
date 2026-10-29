@@ -26,8 +26,9 @@ function karistir(d) {
   return k;
 }
 
-function macOyna(A, B) {
-    const fark = takimEtkin(A.oyuncular, A.strateji) - takimEtkin(B.oyuncular, B.strateji);
+function macOyna(A, B, harita) {
+  harita = harita || rastgeleHarita();
+      const fark = takimEtkin(A.oyuncular, A.strateji) - takimEtkin(B.oyuncular, B.strateji) + haritaPuani(A, harita) - haritaPuani(B, harita);
 const p = Math.min(0.7, Math.max(0.3, 1 / (1 + Math.exp(-fark / 80))));
   const ist = function (t) {
     return t.oyuncular.map(function (o) { return { o: o, kill: 0, death: 0 }; });
@@ -58,7 +59,7 @@ const p = Math.min(0.7, Math.max(0.3, 1 / (1 + Math.exp(-fark / 80))));
       if (ba >= 4 || bb >= 4) break;
     }
   }
-  return { sa: sa, sb: sb, istA: istA, istB: istB, uzatma: uzatma };
+    return { sa: sa, sb: sb, istA: istA, istB: istB, uzatma: uzatma, harita: harita };
 }
 
 function macRakipSec() {
