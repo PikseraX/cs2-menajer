@@ -79,3 +79,56 @@ function haritaOdakSec(ad) {
   kaydet();
   haritaAntrenmanEkrani();
 }
+let hazirlik = { ban: null, rakipBan: null };
+
+function haftaRakip() {
+  const sz = kariyer.sezon;
+  const m = sz.fikstur[sz.gun].find(function (x) { return x[0] === 0 || x[1] === 0; });
+  return ligTakim(m[0] === 0 ? m[1] : m[0]);
+}
+
+function hazirlikEkrani() {
+  sezonHazirla();
+  const sz = kariyer.sezon;
+  if (sz.bitti || sz.oynandi) { kariyerEkrani(); return; }
+  hazirlik = { ban: null, rakipBan: null };
+  hazirlikGoster();
+}
+
+function hazirlikGoster() {
+  const rakip = haftaRakip();
+  const hb = haritaOf({ oyuncular: kariyer.oyuncular });
+  const hr = haritaOf(rakip);
+  let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Maç Hazırlığı</h2>';
+  html += '<div class="bilgi-kutusu">Rakip: <b>' + rakip.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(rakip.oyuncular)) + "</b>";
+  if (rakip.strateji) html += "<br>Strateji: <b>" + rakip.strateji + "</b>";
+  html += "</div>";
+  if (!hazirlik.ban) {
+    html += "<p>Önce bir harita yasakla. Rakip de sonra birini yasaklayacak.</p>";
+  } else {
+    html += '<div class="bilgi-kutusu">Yasakladığın: <b>' + hazirlik.ban + "</b><br>Rakibin yasakladığı: <b>" + hazirlik.rakipBan + "</b></div>";
+    html += "<p>Kalan haritalardan maçı oynayacağın haritayı seç.</p>";
+  }
+  HARITALAR.forEach(function (ad) {
+    if (hazirlik.ban && (ad === hazirlik.ban || ad === hazirlik.rakipBan)) return;
+    const fark = hb[ad] - hr[ad];
+    const yazi = "Sen " + (hb[ad] > 0 ? "+" : "") + hb[ad] + " · Rakip " + (hr[ad] > 0 ? "+" : "") + hr[ad] + " · Fark " + (fark > 0 ? "+" : "") + fark;
+    const fn = hazirlik.ban ? "sezonMaciOyna('" + ad + "')" : "hazirlikBan('" + ad + "')";
+    const renk = fark > 0 ? ' style="border-color:#22c55e"' : (fark < 0 ? ' style="border-color:#ef4444"' : "");
+    html += '<button class="takim-butonu"' + renk + ' onclick="' + fn + '"><span style="text-align:left">' + ad + '<br><small>' + yazi + "</small></span><span>" + (hazirlik.ban ? "Oyna" : "Yasakla") + "</span></button>";
+  });
+  uygulama.innerHTML = html;
+}
+
+function hazirlikBan(ad) {
+  const hb = haritaOf({ oyuncular: kariyer.oyuncular });
+  const hr = haritaOf(haftaRakip());
+  hazirlik.ban = ad;
+  let en = null;
+  HARITALAR.forEach(function (x) {
+    if (x === ad) return;
+    if (en === null || (hb[x] - hr[x]) > (hb[en] - hr[en])) en = x;
+  });
+  hazirlik.rakipBan = en;
+  hazirlikGoster();
+}
