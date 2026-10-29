@@ -68,14 +68,14 @@ function sezonKutusu() {
     h += "<br>Rakip: <b>" + rakip.ad + "</b> (Güç " + Math.round(ortGuc(rakip.oyuncular)) + ")";
     if (sz.oynandi) h += "<br>Bu haftanın maçı oynandı.";
     h += "</div>";
-    if (!sz.oynandi) { h += '<button class="buton" onclick="sezonMaciOyna()">Maçı Oyna</button>'; }
+    if (!sz.oynandi) { h += '<button class="buton" onclick="hazirlikEkrani()">Maç Hazırlığı</button>'; }
     else { h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>'; }
   }
   h += '<button class="buton ikincil" onclick="tabloEkrani()">Puan Tablosu</button>';
   return h;
 }
 
-function sezonMaciOyna() {
+function sezonMaciOyna(harita) {
   sezonHazirla();
   const sz = kariyer.sezon;
   if (sz.bitti || sz.oynandi) return;
@@ -84,7 +84,7 @@ function sezonMaciOyna() {
   sz.fikstur[sz.gun].forEach(function (m) {
     const a = m[0], b = m[1];
     const A = ligTakim(a), B = ligTakim(b);
-    const s = macOyna(A, B);
+    const s = macOyna(A, B, (a === 0 || b === 0) ? harita : undefined);
     sonucIsle(a, b, s);
     if (a === 0) {
       benim = { rakip: B, s: s };
