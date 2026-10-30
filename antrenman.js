@@ -34,11 +34,12 @@ function oyuncuOdagi(o) {
 
 function antrenmanUygula() {
   const rapor = [];
+  const kat = 1 + 0.1 * personelSeviye("koc");
   tumKadro().forEach(function (o) {
     const once = o.genel;
     const odak = oyuncuOdagi(o);
     OZELLIKLER.forEach(function (z) {
-      if (Math.random() < gelisimSansi(o, z === odak)) o[z] = Math.min(99, o[z] + 1);
+      if (Math.random() < gelisimSansi(o, z === odak) * kat) o[z] = Math.min(99, o[z] + 1);
       if (Math.random() < gerilemeSansi(o)) o[z] = Math.max(1, o[z] - 1);
     });
     genelHesapla(o);
