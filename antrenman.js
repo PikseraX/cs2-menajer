@@ -16,6 +16,7 @@ function genelHesapla(o) {
 }
 
 function gelisimSansi(o, odak) {
+  if (o.pot !== undefined && o.genel >= o.pot) return 0;
   if (o.yas < 24) return odak ? 0.6 : 0.15;
   if (o.yas < 30) return odak ? 0.3 : 0.05;
   return 0;
@@ -51,6 +52,7 @@ function yasKontrol() {
   if (sz && sz.bitti && !sz.yaslandi) {
     sz.yaslandi = true;
     tumKadro().forEach(function (o) { o.yas++; });
+    (kariyer.akademi || []).forEach(function (o) { o.yas++; });
     if (kariyer.serbest) kariyer.serbest.forEach(function (o) { o.yas++; });
     dunya.forEach(function (t) { t.oyuncular.forEach(function (o) { o.yas++; }); });
     return true;
