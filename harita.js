@@ -132,3 +132,30 @@ function hazirlikBan(ad) {
   hazirlik.rakipBan = en;
   hazirlikGoster();
 }
+// Rakip, senin yasakladığın haritadan sonra senin en avantajlı olduğun haritayı yasaklar
+function rakipBanSec(rakip, benBan) {
+  const hb = haritaOf({ oyuncular: kariyer.oyuncular });
+  const hr = haritaOf(rakip);
+  let en = null;
+  HARITALAR.forEach(function (x) {
+    if (x === benBan) return;
+    if (en === null || (hb[x] - hr[x]) > (hb[en] - hr[en])) en = x;
+  });
+  return en;
+}
+
+// Sezon sonunda rakip 14 hafta harita antrenmanı yapmış sayılır
+function rakipHaritaGelisim(t) {
+  const h = haritaOf(t);
+  for (let hafta = 0; hafta < 14; hafta++) {
+    const odak = rastgeleHarita();
+    HARITALAR.forEach(function (ad) {
+      const v = h[ad];
+      if (ad === odak) {
+        if (v < HARITA_MAX && Math.random() < haritaGelisimSansi(v)) h[ad] = v + 1;
+      } else if (v > HARITA_MIN && Math.random() < haritaKayipSansi(v)) {
+        h[ad] = v - 1;
+      }
+    });
+  }
+}
