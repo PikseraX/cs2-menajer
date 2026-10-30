@@ -34,7 +34,10 @@ function stratejiUyumu(oyuncular, strateji) {
 
 function stratejiEtkisi(oyuncular, strateji) {
   const u = stratejiUyumu(oyuncular, strateji);
-  return u === null ? 0 : STRATEJI_UYUM_ETKISI[u];
+  if (u === null) return 0;
+  let e = STRATEJI_UYUM_ETKISI[u];
+  if (e < 0 && benimTakimMi(oyuncular)) e *= 1 - 0.2 * personelSeviye("koc");
+  return e;
 }
 
 function rolUygunluk(o, rol) {
