@@ -3,7 +3,7 @@ function temelMaas(o) { return o.maas !== undefined ? o.maas : formulMaas(o); }
 
 function sozlesmeHazirla() {
   const h = kariyer.hafta || 1;
-  kariyer.oyuncular.forEach(function (o) {
+  tumKadro().forEach(function (o) {
     if (o.bitis === undefined) o.bitis = h + 20;
   });
 }
@@ -18,7 +18,9 @@ function maas(o) {
 }
 
 function haftalikGider() {
-  return kariyer.oyuncular.reduce(function (s, o) { return s + maas(o); }, 0);
+  let t = kariyer.oyuncular.reduce(function (s, o) { return s + maas(o); }, 0);
+  yedekListe().forEach(function (o) { t += Math.round(maas(o) * YEDEK_MAAS_ORANI); });
+  return t;
 }
 
 function maasKutusu() {
@@ -27,7 +29,7 @@ function maasKutusu() {
   if (kariyer.butce < 0) {
     h += '<br><span style="color:#ef4444">Bütçe eksi! Transfer yapamazsın.</span>';
   }
-  const biten = kariyer.oyuncular.filter(sozlesmeBitti).length;
+  const biten = tumKadro().filter(sozlesmeBitti).length;
   if (biten > 0) {
     h += '<br><span style="color:#ef4444">' + biten + " oyuncunun sözleşmesi bitti (maaş %25 zamlı).</span>";
   }
@@ -64,17 +66,18 @@ function sozlesmeEkrani() {
   sozlesmeHazirla();
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Sözleşmeler</h2>';
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Hafta: <b>" + (kariyer.hafta || 1) + "</b><br>Yenileme: +26 hafta, 4 haftalık maaş ödenir, maaş %15 artar</div>";
-  kariyer.oyuncular.forEach(function (o, i) {
+  tumKadro().forEach(function (o, i) {
     const kalan = o.bitis - (kariyer.hafta || 1) + 1;
     const durum = kalan > 0 ? kalan + " hafta kaldı" : "SÖZLEŞME BİTTİ";
     const renk = kalan > 0 ? "" : ' style="border-color:#ef4444"';
-    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span style="text-align:left">' + o.ad + " (" + durum + ")<br>Yaş " + o.yas + " · GEN " + o.genel + " · " + tarzYazi(o) + "<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
+    const yedek = i >= kariyer.oyuncular.length ? " · Yedek" : "";
+    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span style="text-align:left">' + o.ad + " (" + durum + ")<br>Yaş " + o.yas + " · GEN " + o.genel + " · " + tarzYazi(o) + yedek + "<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
   });
   uygulama.innerHTML = html;
 }
 
 function sozlesmeYenile(i) {
-  const o = kariyer.oyuncular[i];
+  const o = tumKadro()[i];
   const baz = temelMaas(o);
   const ucret = baz * 4;
   const yeniMaas = Math.round(baz * 1.15);
