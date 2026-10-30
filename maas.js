@@ -20,7 +20,7 @@ function maas(o) {
 function haftalikGider() {
   let t = kariyer.oyuncular.reduce(function (s, o) { return s + maas(o); }, 0);
   yedekListe().forEach(function (o) { t += Math.round(maas(o) * YEDEK_MAAS_ORANI); });
-  return t + akademiGideri();
+  return t + akademiGideri() + personelGideri();
 }
 
 function maasKutusu() {
@@ -51,6 +51,8 @@ function haftaGec() {
   kariyer.butce += sp - g;
   maliIsle("gelir", "sponsor", sp);
   maliIsle("gider", "maas", g);
+  maliIsle("gider", "maas", g - personelGideri());
+  maliIsle("gider", "personel", personelGideri());
   let faiz = 0;
   if (kariyer.butce < 0) {
     faiz = Math.round(-kariyer.butce * BORC_FAIZ);
