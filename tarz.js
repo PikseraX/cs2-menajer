@@ -25,7 +25,7 @@ function tarzEtkisi(o) {
 
 function takimEtkin(oyuncular, strateji) {
   const t = oyuncular.reduce(function (s, o) { return s + tarzEtkisi(o); }, 0) / oyuncular.length;
-  return ortGuc(oyuncular) + t + stratejiEtkisi(oyuncular, strateji);
+  return ortGuc(oyuncular) + t + stratejiEtkisi(oyuncular, strateji) + formEtkisi(oyuncular);
 }
 
 function tarzYazi(o) {
