@@ -33,7 +33,7 @@ function oyuncuOdagi(o) {
 
 function antrenmanUygula() {
   const rapor = [];
-  kariyer.oyuncular.forEach(function (o) {
+  tumKadro().forEach(function (o) {
     const once = o.genel;
     const odak = oyuncuOdagi(o);
     OZELLIKLER.forEach(function (z) {
@@ -50,7 +50,7 @@ function yasKontrol() {
   const sz = kariyer.sezon;
   if (sz && sz.bitti && !sz.yaslandi) {
     sz.yaslandi = true;
-    kariyer.oyuncular.forEach(function (o) { o.yas++; });
+    tumKadro().forEach(function (o) { o.yas++; });
     if (kariyer.serbest) kariyer.serbest.forEach(function (o) { o.yas++; });
     dunya.forEach(function (t) { t.oyuncular.forEach(function (o) { o.yas++; }); });
     return true;
@@ -60,15 +60,16 @@ function yasKontrol() {
 
 function odakEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Antrenman Odağı</h2>';
-  html += "<p>Bir oyuncuya bas, odağını seç.</p>";
-  kariyer.oyuncular.forEach(function (o, i) {
-    html += '<button class="takim-butonu" onclick="oyuncuOdakSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + ")</span><span>" + ODAK_ADLARI[oyuncuOdagi(o)] + "</span></button>";
+  html += "<p>Bir oyuncuya bas, odağını seç. Yedekler de antrenman yapar.</p>";
+  tumKadro().forEach(function (o, i) {
+    const yedek = i >= kariyer.oyuncular.length ? " · Yedek" : "";
+    html += '<button class="takim-butonu" onclick="oyuncuOdakSec(' + i + ')"><span>' + o.ad + " (" + o.rol + ", " + o.yas + yedek + ")</span><span>" + ODAK_ADLARI[oyuncuOdagi(o)] + "</span></button>";
   });
   uygulama.innerHTML = html;
 }
 
 function oyuncuOdakSec(i) {
-  const o = kariyer.oyuncular[i];
+  const o = tumKadro()[i];
   const secili = oyuncuOdagi(o);
   let html = '<button class="geri" onclick="odakEkrani()">← Geri</button><h2>' + o.ad + "</h2>";
   html += "<p>Seçtiğin özellik her hafta daha hızlı gelişir.</p>";
@@ -80,7 +81,7 @@ function oyuncuOdakSec(i) {
 }
 
 function odakKaydet(i, z) {
-  kariyer.oyuncular[i].odak = z;
+  tumKadro()[i].odak = z;
   kaydet();
   odakEkrani();
 }
