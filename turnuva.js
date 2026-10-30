@@ -208,6 +208,7 @@ function turnuvaTurOyna(kalan, banYazi) {
   const T = turnuvaBul(tu.tid);
   tu.sonHafta = kariyer.hafta;
   const rapor = [turVer(tu, kalan, banYazi)];
+  moralMacSonucu(tu.elendi[-1] === undefined);
   while (tu.hayatta.length > 1 && tu.hayatta.indexOf(-1) < 0) {
     rapor.push(turVer(tu));
   }
