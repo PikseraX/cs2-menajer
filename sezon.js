@@ -154,6 +154,7 @@ function sezonuKapat() {
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1, mvp: mvp, lig: sonuc.eski, yeniLig: sonuc.yeni });
   siralamaGuncelle(sonuc.prim, sonuc.benPrim);
   kariyer.turnuva = null;
+  serbestYenile();
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
   kaydet();
