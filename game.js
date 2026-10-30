@@ -185,6 +185,7 @@ function kadroEkrani() {
   html += kadroOzet(kariyer.oyuncular, kariyer.strateji) + tabloHtml(kariyer.oyuncular);
   html += haritaTablosu({ oyuncular: kariyer.oyuncular });
   html += '<button class="buton" onclick="stratejiEkrani()">Strateji Belirle</button>';
+  html += '<button class="buton ikincil" onclick="yedekEkrani()">Yedek Kadro (' + yedekListe().length + "/" + YEDEK_MAX + ")</button>";
   html += '<button class="buton" onclick="haritaAntrenmanEkrani()">Harita Antrenmanı</button>';
   html += '<button class="buton ikincil" onclick="istatistikEkrani()">İstatistikler</button>';
   html += '<button class="buton ikincil" onclick="stratejiRehberi()">Strateji Rehberi</button>';
