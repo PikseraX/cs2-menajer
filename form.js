@@ -14,7 +14,7 @@ function formEtkisi(oyuncular) {
 // Maç bitince çağrılır (lig ve turnuva)
 function moralMacSonucu(kazandi) {
   kariyer.haftaMac = true;
-  const d = kazandi ? 5 : -5;
+  const d = kazandi ? 5 : -(5 - personelSeviye("fizyo"));
   kariyer.oyuncular.forEach(function (o) { o.mor = sinir100(moralOf(o) + d); });
 }
 
@@ -22,8 +22,9 @@ function moralMacSonucu(kazandi) {
 function formHaftalik(rapor) {
   const oynadi = !!kariyer.haftaMac;
   kariyer.haftaMac = false;
+  const dinlen = FIZYO_DINLENME[personelSeviye("fizyo")];
   kariyer.oyuncular.forEach(function (o) {
-    o.yor = sinir100(yorOf(o) + (oynadi ? 6 : -8));
+    o.yor = sinir100(yorOf(o) + (oynadi ? 6 : -8) - dinlen);
     let m = moralOf(o);
     m += m < 70 ? 1 : (m > 70 ? -1 : 0);
     if (sozlesmeBitti(o)) m -= 2;
