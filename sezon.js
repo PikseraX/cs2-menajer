@@ -1,5 +1,3 @@
-A
-
 const LIG_TAKIM_SAYISI = 8;
 const SEZON_ODULLERI = [150000, 100000, 60000, 30000, 15000, 10000, 5000, 5000];
 
@@ -82,7 +80,7 @@ function sezonKutusu() {
   return h;
 }
 
-// Canlı maç bitince çağrılır: diğer maçları oynatır, sonuçları işler
+// Canlı maç bitince çağrılır: diğer lig maçlarını oynatır, sonuçları işler
 function sezonMaciBitir(s) {
   sezonHazirla();
   const sz = kariyer.sezon;
