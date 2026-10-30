@@ -232,6 +232,7 @@ function turnuvaBitir(T, tu, rapor) {
   const y = yer(-1);
   const odul = T.oduller[y];
   kariyer.butce += odul;
+  maliIsle("gelir", "turnuva", odul);
   let yerYazi = "Şampiyon!";
   if (y === 1) yerYazi = "Finalde elendi";
   if (y > 1) yerYazi = turAdi(T, tu.elendi[-1]) + " turunda elendi";
