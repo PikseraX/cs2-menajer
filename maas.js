@@ -46,8 +46,17 @@ function haftaGec() {
     if (!ligHaftasi && tu && tu.sezon === sz.no && tu.sonHafta !== kariyer.hafta) { alert("Önce bu haftanın turnuva maçını oyna."); return; }
   }
   const g = haftalikGider();
-  if (!confirm("Hafta bitecek ve " + para(g) + " maaş ödenecek. Onaylıyor musun?")) return;
-  kariyer.butce -= g;
+  const sp = sponsorGeliri();
+  if (!confirm("Hafta bitecek. Maaş: -" + para(g) + ", sponsor: +" + para(sp) + ". Onaylıyor musun?")) return;
+  kariyer.butce += sp - g;
+  maliIsle("gelir", "sponsor", sp);
+  maliIsle("gider", "maas", g);
+  let faiz = 0;
+  if (kariyer.butce < 0) {
+    faiz = Math.round(-kariyer.butce * BORC_FAIZ);
+    kariyer.butce -= faiz;
+    maliIsle("gider", "faiz", faiz);
+  }
   kariyer.hafta = (kariyer.hafta || 1) + 1;
   if (!sz.bitti) {
     sz.oynandi = false;
@@ -59,7 +68,7 @@ function haftaGec() {
   haritaAntrenmaniUygula(rapor);
   const yasArtti = yasKontrol();
   kaydet();
-  haftaRaporu(g, rapor, yasArtti);
+  haftaRaporu(g, rapor, yasArtti, sp, faiz);
 }
 
 function sozlesmeEkrani() {
@@ -84,6 +93,7 @@ function sozlesmeYenile(i) {
   if (kariyer.butce - ucret < 0) { alert("Bütçen yetersiz."); return; }
   if (!confirm(o.ad + " için " + para(ucret) + " ödenecek. Maaşı " + para(baz) + " → " + para(yeniMaas) + " olacak, sözleşme 26 hafta uzayacak. Onaylıyor musun?")) return;
   kariyer.butce -= ucret;
+  maliIsle("gider", "yenileme", ucret);
   o.maas = yeniMaas;
   const h = kariyer.hafta || 1;
   o.bitis = Math.max(o.bitis, h) + 26;
