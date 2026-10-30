@@ -83,7 +83,7 @@ function haritaOdakSec(ad) {
 // Sezon sonunda rakip 14 hafta harita antrenmanı yapmış sayılır
 function rakipHaritaGelisim(t) {
   const h = haritaOf(t);
-  for (let hafta = 0; hafta < 14; hafta++) {
+    for (let hafta = 0; hafta < 28; hafta++) {
     const odak = rastgeleHarita();
     HARITALAR.forEach(function (ad) {
       const v = h[ad];
@@ -139,6 +139,7 @@ function banEkrani() {
   html += '<div class="bilgi-kutusu">Rakip: <b>' + d.rakip.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(d.rakip.oyuncular)) + "</b>";
   if (d.rakip.strateji) html += "<br>Strateji: <b>" + d.rakip.strateji + "</b>";
   html += "<br>" + (d.mod === "lig" ? "Her taraf 3 harita yasaklar, kalan 1 haritada maç oynanır." : "Her taraf 2 harita yasaklar, kalan 3 haritada BO3 oynanır (2 harita kazanan turu geçer).") + "</div>";
+  html += "<p>Kalan harita: <b>" + kalan.length + "</b> · Hedef: <b>" + d.hedef + "</b></p>";
   if (d.banlar.length > 0) {
     html += "<p>" + d.banlar.map(function (b, i) {
       return (i + 1) + ". " + (b.kim === "sen" ? "Sen" : "Rakip") + ": " + b.harita;
