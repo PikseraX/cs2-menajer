@@ -101,6 +101,7 @@ function rakipSezonSonu() {
   dunya.forEach(function (t, ti) {
     const ligde = ligdekiler.indexOf(ti) >= 0;
     const once = takimOrt(t);
+    rakipHaritaGelisim(t);
     t.oyuncular.forEach(function (o) {
       rakipOyuncuGelistir(o, rastgeleEleman(OZELLIKLER));
     });
