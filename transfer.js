@@ -76,6 +76,7 @@ function transferYap(i, k) {
   if (kariyer.butce - net < 0) { alert("Bütçen yetersiz."); return; }
   if (!confirm(eski.ad + " satılacak, " + yeni.ad + " alınacak. Onaylıyor musun?")) return;
   kariyer.butce -= net;
+  maliIsle(net >= 0 ? "gider" : "gelir", "transfer", Math.abs(net));
   yeni.bitis = (kariyer.hafta || 1) + 30;
   kariyer.oyuncular[k] = yeni;
   kariyer.serbest[i] = eski;
@@ -93,6 +94,7 @@ function transferYedek(i, j) {
   const soru = eski ? eski.ad + " satılacak, " + yeni.ad + " yedeğe alınacak. Onaylıyor musun?" : yeni.ad + " yedek kadroya alınacak. Onaylıyor musun?";
   if (!confirm(soru)) return;
   kariyer.butce -= net;
+  maliIsle(net >= 0 ? "gider" : "gelir", "transfer", Math.abs(net));
   yeni.bitis = (kariyer.hafta || 1) + 30;
   if (eski) {
     y[j] = yeni;
