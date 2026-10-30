@@ -20,7 +20,7 @@ function maas(o) {
 function haftalikGider() {
   let t = kariyer.oyuncular.reduce(function (s, o) { return s + maas(o); }, 0);
   yedekListe().forEach(function (o) { t += Math.round(maas(o) * YEDEK_MAAS_ORANI); });
-  return t;
+  return t + akademiGideri();
 }
 
 function maasKutusu() {
@@ -66,6 +66,7 @@ function haftaGec() {
   }
   const rapor = antrenmanUygula();
   haritaAntrenmaniUygula(rapor);
+  akademiHaftalik(rapor);
   const yasArtti = yasKontrol();
   kaydet();
   haftaRaporu(g, rapor, yasArtti, sp, faiz);
