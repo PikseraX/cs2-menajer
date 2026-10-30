@@ -104,6 +104,7 @@ function sezonMaciBitir(s) {
   if (kazandi) { kariyer.galibiyet = (kariyer.galibiyet || 0) + 1; }
   else { kariyer.maglubiyet = (kariyer.maglubiyet || 0) + 1; }
   sz.oynandi = true;
+  moralMacSonucu(kazandi);
   macIstatistikIsle(s.istA);
   kaydet();
   sezonMacRaporu(rakip, s, odul, digerleri);
