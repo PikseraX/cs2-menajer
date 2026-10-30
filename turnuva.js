@@ -95,22 +95,33 @@ function turnuvaDevam() {
   const tu = kariyer.turnuva;
   if (!tu) { turnuvaEkrani(); return; }
   const T = turnuvaBul(tu.tid);
+  const hb = haritaOf({ oyuncular: kariyer.oyuncular });
+  let rakip = null;
   let html = '<button class="geri" onclick="turnuvaEkrani()">← Geri</button><h2>' + T.ad + " · " + turAdi(T, tu.tur) + "</h2>";
   html += "<p>Kalan takım: " + tu.hayatta.length + " · Maçlar BO3</p>";
   for (let i = 0; i < tu.hayatta.length; i += 2) {
     if (tu.hayatta[i] !== -1 && tu.hayatta[i + 1] !== -1) continue;
     const a = turnuvaTakim(tu.hayatta[i]), b = turnuvaTakim(tu.hayatta[i + 1]);
+    rakip = tu.hayatta[i] === -1 ? b : a;
     html += '<div class="bilgi-kutusu" style="border-color:' + kariyer.renk + '"><b>Senin maçın</b><br>' + a.ad + " (Güç " + Math.round(ortGuc(a.oyuncular)) + ")<br>vs<br>" + b.ad + " (Güç " + Math.round(ortGuc(b.oyuncular)) + ")</div>";
   }
-  html += '<button class="buton" onclick="turnuvaTurOyna()">Turu Oyna</button>';
+  if (!rakip) { html += '<button class="buton" onclick="turnuvaTurOyna()">Turu Oyna</button>'; uygulama.innerHTML = html; return; }
+  const hr = haritaOf(rakip);
+  html += "<p>Bir harita yasakla. Rakip de senin en avantajlı olduğun haritayı yasaklayacak. 3 harita kalan 5 haritadan rastgele seçilir.</p>";
+  HARITALAR.forEach(function (ad) {
+    const fark = hb[ad] - hr[ad];
+    const yazi = "Sen " + (hb[ad] > 0 ? "+" : "") + hb[ad] + " · Rakip " + (hr[ad] > 0 ? "+" : "") + hr[ad] + " · Fark " + (fark > 0 ? "+" : "") + fark;
+    const renk = fark > 0 ? ' style="border-color:#22c55e"' : (fark < 0 ? ' style="border-color:#ef4444"' : "");
+    html += '<button class="takim-butonu"' + renk + " onclick=\"turnuvaTurOyna('" + ad + "')\"><span style=\"text-align:left\">" + ad + "<br><small>" + yazi + "</small></span><span>Yasakla</span></button>";
+  });
   uygulama.innerHTML = html;
 }
 
 // İki takım arka arkaya harita oynar, önce 2 harita kazanan seriyi alır
-function seriOyna(A, B) {
+function seriOyna(A, B, yasak) {
   let a = 0, b = 0;
   const haritalar = [];
-  const liste = karistir(HARITALAR);
+  const liste = karistir(HARITALAR.filter(function (x) { return !yasak || yasak.indexOf(x) < 0; }));
   while (a < 2 && b < 2) {
     const hr = liste[haritalar.length];
     const s = macOyna(A, B, hr);
@@ -121,19 +132,27 @@ function seriOyna(A, B) {
 }
 
 // Bir turu oynatır, kazananları ayırır
-function turVer(tu) {
+function turVer(tu, benBan) {
   const n = tu.tur;
   const satirlar = [];
   const yeni = [];
   for (let i = 0; i < tu.hayatta.length; i += 2) {
     const a = tu.hayatta[i], b = tu.hayatta[i + 1];
     const A = turnuvaTakim(a), B = turnuvaTakim(b);
-    const s = seriOyna(A, B);
+    const benim = a === -1 || b === -1;
+    let yasak = null;
+    let yasakYazi = "";
+    if (benim && benBan) {
+      const rb = rakipBanSec(a === -1 ? B : A, benBan);
+      yasak = [benBan, rb];
+      yasakYazi = " · Yasaklar: sen " + benBan + ", rakip " + rb;
+    }
+    const s = seriOyna(A, B, yasak);
     const aKazandi = s.a > s.b;
     yeni.push(aKazandi ? a : b);
     tu.elendi[aKazandi ? b : a] = n;
     let satir = A.ad + " " + s.a + " - " + s.b + " " + B.ad;
-    if (a === -1 || b === -1) satir = "<b>" + satir + "</b> (" + s.haritalar.join(", ") + ")";
+    if (benim) satir = "<b>" + satir + "</b> (" + s.haritalar.join(", ") + ")" + yasakYazi;
     satirlar.push(satir);
   }
   tu.hayatta = yeni;
@@ -141,13 +160,13 @@ function turVer(tu) {
   return { tur: n, satirlar: satirlar };
 }
 
-function turnuvaTurOyna() {
+function turnuvaTurOyna(benBan) {
   const tu = kariyer.turnuva;
   if (!tu) return;
   const T = turnuvaBul(tu.tid);
-  const rapor = [turVer(tu)];
+  const rapor = [turVer(tu, benBan)];
   while (tu.hayatta.length > 1 && tu.hayatta.indexOf(-1) < 0) {
-    rapor.push(turVer(tu));
+    rapor.push(turVer(tu, null));
   }
   if (tu.hayatta.length === 1) {
     turnuvaBitir(T, tu, rapor);
