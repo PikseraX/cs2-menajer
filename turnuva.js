@@ -1,9 +1,9 @@
 const TURNUVALAR = [
-  { id: "yerel", ad: "Yerel Kupa", boyut: 32, min: 49, max: 80, acilis: 2,
+  { id: "yerel", ad: "Yerel Kupa", boyut: 32, min: 49, max: 80,
     oduller: [40000, 20000, 12000, 8000, 4000, 2000], puan: [30, 18, 12, 8, 4, 2] },
-  { id: "bolgesel", ad: "Bölgesel Turnuva", boyut: 32, min: 17, max: 48, acilis: 6,
+  { id: "bolgesel", ad: "Bölgesel Turnuva", boyut: 32, min: 17, max: 48,
     oduller: [120000, 60000, 35000, 20000, 10000, 5000], puan: [60, 36, 24, 14, 8, 4] },
-  { id: "uluslararasi", ad: "Uluslararası Büyük Turnuva", boyut: 16, min: 1, max: 16, acilis: 9,
+  { id: "uluslararasi", ad: "Uluslararası Büyük Turnuva", boyut: 16, min: 1, max: 16,
     oduller: [500000, 250000, 120000, 60000, 30000], puan: [120, 72, 40, 20, 10] }
 ];
 
@@ -21,6 +21,10 @@ function benimDunyaSirasi() {
   return l.length;
 }
 
+function turnuvaToplamTur(T) {
+  return Math.round(Math.log(T.boyut) / Math.log(2));
+}
+
 function turAdi(T, tur) {
   const n = T.boyut / Math.pow(2, tur - 1);
   if (n === 2) return "Final";
@@ -35,10 +39,39 @@ function turnuvaDurum(T) {
   sz.tb = sz.tb || {};
   if (sz.tb[T.id]) return "bitti";
   if (kariyer.turnuva && kariyer.turnuva.tid === T.id && kariyer.turnuva.sezon === sz.no) return "devam";
-  if (sz.gun < T.acilis) return "kilitli";
+  if (sz.bitti || (sz.fikstur.length - sz.gun) < turnuvaToplamTur(T)) return "gec";
   const s = benimDunyaSirasi();
   if (s < T.min || s > T.max) return "davetsiz";
   return "hazir";
+}
+
+// Ana ekrandaki turnuva haftası kutusunun devamı (kutuyu kapatır, butonları ekler)
+function turnuvaHaftaKutusu() {
+  const sz = kariyer.sezon;
+  const tu = kariyer.turnuva;
+  const aktif = tu && tu.sezon === sz.no && tu.v === 2;
+  let h = "";
+  if (aktif) {
+    const T = turnuvaBul(tu.tid);
+    const rakip = turnuvaRakibi(tu);
+    h += "<br>" + T.ad + " · " + turAdi(T, tu.tur);
+    if (rakip) h += "<br>Rakip: <b>" + rakip.ad + "</b> (Güç " + Math.round(ortGuc(rakip.oyuncular)) + ")";
+    if (tu.sonHafta === kariyer.hafta) h += "<br>Bu haftanın turu oynandı.";
+    h += "</div>";
+    if (tu.sonHafta === kariyer.hafta) h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>';
+    else h += '<button class="buton" onclick="turnuvaBanBaslat()">Maçı Oyna</button>';
+    return h;
+  }
+  const davetli = TURNUVALAR.filter(function (T) { return turnuvaDurum(T) === "hazir"; });
+  if (davetli.length > 0) {
+    h += "<br>Davetlisin: <b>" + davetli.map(function (T) { return T.ad; }).join(", ") + "</b></div>";
+    h += '<button class="buton" onclick="turnuvaEkrani()">Turnuvaya Katıl</button>';
+    h += '<button class="buton ikincil" onclick="haftaGec()">Katılma, Haftayı Bitir</button>';
+  } else {
+    h += "<br>Bu hafta turnuva maçın yok.</div>";
+    h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>';
+  }
+  return h;
 }
 
 function turnuvaEkrani() {
@@ -46,16 +79,16 @@ function turnuvaEkrani() {
   const sz = kariyer.sezon;
   if (kariyer.turnuva && (kariyer.turnuva.sezon !== sz.no || kariyer.turnuva.v !== 2)) kariyer.turnuva = null;
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Turnuvalar</h2>';
-  html += '<div class="bilgi-kutusu">Dünya sıralaman: <b>' + benimDunyaSirasi() + ". / 100</b><br>Davetler dünya sıralamana göre gelir. Her hafta 1 tur oynanır. Maçlar BO3 (2 harita kazanan turu geçer). Sezon bitince yarım kalan turnuva silinir.</div>";
+  html += '<div class="bilgi-kutusu">Dünya sıralaman: <b>' + benimDunyaSirasi() + ". / 100</b><br>Davetler dünya sıralamana göre gelir. Turlar yalnızca turnuva haftalarında oynanır (lig ve turnuva haftaları sırayla gelir). Maçlar BO3, her taraf 2 harita yasaklar. Sezon bitince yarım kalan turnuva silinir.</div>";
   TURNUVALAR.forEach(function (T) {
     const d = turnuvaDurum(T);
     let durum = "";
     if (d === "bitti") durum = "Bu sezon oynandı.";
     if (d === "devam") durum = "<b>Devam ediyor.</b>";
-    if (d === "kilitli") durum = "Hafta " + (T.acilis + 1) + "'ten itibaren açılır.";
+    if (d === "gec") durum = "Bu sezon için yeterli turnuva haftası kalmadı.";
     if (d === "davetsiz") durum = "Davet yok.";
     if (d === "hazir") durum = '<b style="color:#22c55e">DAVETLİSİN</b>';
-    html += '<div class="bilgi-kutusu"><b>' + T.ad + "</b> (" + T.boyut + " takım)<br>Davet: dünya sıralamasında " + T.min + "-" + T.max + ". sıra<br>Şampiyonluk ödülü: " + para(T.oduller[0]) + "<br>" + durum + "</div>";
+    html += '<div class="bilgi-kutusu"><b>' + T.ad + "</b> (" + T.boyut + " takım, " + turnuvaToplamTur(T) + " tur)<br>Davet: dünya sıralamasında " + T.min + "-" + T.max + ". sıra<br>Şampiyonluk ödülü: " + para(T.oduller[0]) + "<br>" + durum + "</div>";
     if (d === "hazir") html += '<button class="buton" onclick="turnuvaBaslat(\'' + T.id + '\')">Katıl</button>';
     if (d === "devam") html += '<button class="buton" onclick="turnuvaDevam()">Turnuvaya Devam Et</button>';
   });
@@ -84,7 +117,7 @@ function turnuvaBaslat(tid) {
     katilan: katilan,
     hayatta: karistir(katilan),
     tur: 1,
-    toplamTur: Math.round(Math.log(T.boyut) / Math.log(2)),
+    toplamTur: turnuvaToplamTur(T),
     elendi: {},
     sonHafta: 0
   };
@@ -108,12 +141,15 @@ function turnuvaDevam() {
   const T = turnuvaBul(tu.tid);
   const rakip = turnuvaRakibi(tu);
   let html = '<button class="geri" onclick="turnuvaEkrani()">← Geri</button><h2>' + T.ad + " · " + turAdi(T, tu.tur) + "</h2>";
-  html += "<p>Kalan takım: " + tu.hayatta.length + " · Her hafta 1 tur · Maçlar BO3</p>";
+  html += "<p>Kalan takım: " + tu.hayatta.length + " · Her turnuva haftasında 1 tur · Maçlar BO3</p>";
   if (rakip) {
     html += '<div class="bilgi-kutusu" style="border-color:' + kariyer.renk + '"><b>Senin maçın</b><br>' + kariyer.takimAdi + " (Güç " + Math.round(ortGuc(kariyer.oyuncular)) + ")<br>vs<br>" + rakip.ad + " (Güç " + Math.round(ortGuc(rakip.oyuncular)) + ")</div>";
   }
   if (tu.sonHafta === kariyer.hafta) {
     html += '<div class="bilgi-kutusu">Bu haftaki turu oynadın. Sonraki tur için haftayı bitir.</div>';
+    html += '<button class="buton" onclick="kariyerEkrani()">Kariyere Dön</button>';
+  } else if (kariyer.sezon.hf % 2 !== 1) {
+    html += '<div class="bilgi-kutusu">Turnuva turları yalnızca turnuva haftasında oynanır. Önce lig maçını oyna ve haftayı bitir.</div>';
     html += '<button class="buton" onclick="kariyerEkrani()">Kariyere Dön</button>';
   } else {
     html += '<button class="buton" onclick="turnuvaBanBaslat()">Harita Yasaklamaya Geç</button>';
@@ -123,7 +159,7 @@ function turnuvaDevam() {
 
 function turnuvaBanBaslat() {
   const tu = kariyer.turnuva;
-  if (!tu || tu.sonHafta === kariyer.hafta) return;
+  if (!tu || tu.sonHafta === kariyer.hafta || kariyer.sezon.hf % 2 !== 1) return;
   const rakip = turnuvaRakibi(tu);
   if (!rakip) return;
   banDurum = { mod: "turnuva", rakip: rakip, hedef: 3, geri: "turnuvaDevam()", banlar: [] };
@@ -168,7 +204,7 @@ function turVer(tu, kalan, banYazi) {
 
 function turnuvaTurOyna(kalan, banYazi) {
   const tu = kariyer.turnuva;
-  if (!tu || tu.sonHafta === kariyer.hafta) return;
+  if (!tu || tu.sonHafta === kariyer.hafta || kariyer.sezon.hf % 2 !== 1) return;
   const T = turnuvaBul(tu.tid);
   tu.sonHafta = kariyer.hafta;
   const rapor = [turVer(tu, kalan, banYazi)];
@@ -215,7 +251,7 @@ function turnuvaRaporu(T, rapor, sonuc) {
     html += '<button class="buton" onclick="kariyerEkrani()">Kariyere Dön</button>';
     html += '<button class="buton ikincil" onclick="turnuvaEkrani()">Turnuvalar</button>';
   } else {
-    html += '<div class="bilgi-kutusu">Turu geçtin. Sonraki tur gelecek hafta oynanır.</div>';
+    html += '<div class="bilgi-kutusu">Turu geçtin. Sonraki tur bir sonraki turnuva haftasında (2 hafta sonra) oynanır.</div>';
     html += '<button class="buton" onclick="kariyerEkrani()">Kariyere Dön</button>';
   }
   rapor.forEach(function (r) {
