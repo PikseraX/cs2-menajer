@@ -37,15 +37,21 @@ function maasKutusu() {
 function haftaGec() {
   sezonHazirla();
   const sz = kariyer.sezon;
-  if (!sz.bitti && !sz.oynandi) { alert("Önce bu haftanın maçını oyna."); return; }
+  const ligHaftasi = sz.hf % 2 === 0;
+  if (!sz.bitti) {
+    if (ligHaftasi && !sz.oynandi) { alert("Önce bu haftanın lig maçını oyna."); return; }
+    const tu = kariyer.turnuva;
+    if (!ligHaftasi && tu && tu.sezon === sz.no && tu.sonHafta !== kariyer.hafta) { alert("Önce bu haftanın turnuva maçını oyna."); return; }
+  }
   const g = haftalikGider();
   if (!confirm("Hafta bitecek ve " + para(g) + " maaş ödenecek. Onaylıyor musun?")) return;
   kariyer.butce -= g;
   kariyer.hafta = (kariyer.hafta || 1) + 1;
-  if (sz.oynandi) {
+  if (!sz.bitti) {
     sz.oynandi = false;
-    sz.gun++;
-    if (sz.gun >= sz.fikstur.length) sz.bitti = true;
+    sz.hf++;
+    sz.gun = Math.floor(sz.hf / 2);
+    if (sz.hf >= sz.fikstur.length * 2) sz.bitti = true;
   }
   const rapor = antrenmanUygula();
   haritaAntrenmaniUygula(rapor);
