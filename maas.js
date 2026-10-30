@@ -67,6 +67,7 @@ function haftaGec() {
   const rapor = antrenmanUygula();
   haritaAntrenmaniUygula(rapor);
   akademiHaftalik(rapor);
+  formHaftalik(rapor);
   const yasArtti = yasKontrol();
   kaydet();
   haftaRaporu(g, rapor, yasArtti, sp, faiz);
@@ -96,6 +97,7 @@ function sozlesmeYenile(i) {
   kariyer.butce -= ucret;
   maliIsle("gider", "yenileme", ucret);
   o.maas = yeniMaas;
+  o.mor = sinir100(moralOf(o) + 10);
   const h = kariyer.hafta || 1;
   o.bitis = Math.max(o.bitis, h) + 26;
   kaydet();
