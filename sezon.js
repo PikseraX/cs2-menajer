@@ -80,36 +80,33 @@ function sezonKutusu() {
   return h;
 }
 
-function sezonMaciOyna(harita) {
+// Canlı maç bitince çağrılır: diğer maçları oynatır, sonuçları işler
+function sezonMaciBitir(s) {
   sezonHazirla();
   const sz = kariyer.sezon;
   if (sz.bitti || sz.oynandi) return;
-  let benim = null;
   const digerleri = [];
+  let rakipIdx = null;
   sz.fikstur[sz.gun].forEach(function (m) {
     const a = m[0], b = m[1];
+    if (a === 0 || b === 0) { rakipIdx = a === 0 ? b : a; return; }
     const A = ligTakim(a), B = ligTakim(b);
-    const s = macOyna(A, B, (a === 0 || b === 0) ? harita : undefined);
-    sonucIsle(a, b, s);
-    if (a === 0) {
-      benim = { rakip: B, s: s };
-    } else if (b === 0) {
-      benim = { rakip: A, s: { sa: s.sb, sb: s.sa, istA: s.istB, istB: s.istA, uzatma: s.uzatma, harita: s.harita } };
-    } else {
-      digerleri.push(A.ad + " " + s.sa + " - " + s.sb + " " + B.ad);
-    }
+    const r = macOyna(A, B);
+    sonucIsle(a, b, r);
+    digerleri.push(A.ad + " " + r.sa + " - " + r.sb + " " + B.ad);
   });
-  const kazandi = benim.s.sa > benim.s.sb;
+  sonucIsle(0, rakipIdx, s);
+  const rakip = ligTakim(rakipIdx);
+  const kazandi = s.sa > s.sb;
   const odul = macOdulu(kazandi);
   kariyer.butce += odul;
   maliIsle("gelir", "mac", odul);
-  kariyer.butce += odul;
   if (kazandi) { kariyer.galibiyet = (kariyer.galibiyet || 0) + 1; }
   else { kariyer.maglubiyet = (kariyer.maglubiyet || 0) + 1; }
   sz.oynandi = true;
-  macIstatistikIsle(benim.s.istA);
+  macIstatistikIsle(s.istA);
   kaydet();
-  sezonMacRaporu(benim.rakip, benim.s, odul, digerleri);
+  sezonMacRaporu(rakip, s, odul, digerleri);
 }
 
 function sezonMacRaporu(B, s, odul, digerleri) {
