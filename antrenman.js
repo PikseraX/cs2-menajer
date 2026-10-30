@@ -86,9 +86,12 @@ function odakKaydet(i, z) {
   odakEkrani();
 }
 
-function haftaRaporu(g, rapor, yasArtti) {
+function haftaRaporu(g, rapor, yasArtti, sp, faiz) {
   let html = "<h2>Hafta Raporu</h2>";
-  html += '<div class="bilgi-kutusu">Ödenen maaş: <b>' + para(g) + "</b><br>Hafta: <b>" + kariyer.hafta + "</b>";
+  html += '<div class="bilgi-kutusu">Ödenen maaş: <b>' + para(g) + "</b>";
+  if (sp) html += "<br>Sponsor geliri: <b>+" + para(sp) + "</b>";
+  if (faiz) html += '<br><span style="color:#ef4444">Borç faizi: -' + para(faiz) + "</span>";
+  html += "<br>Hafta: <b>" + kariyer.hafta + "</b>";
   if (yasArtti) html += "<br>Yeni sezon: oyuncular 1 yaş büyüdü.";
   html += "</div><h2>Gelişim</h2>";
   if (rapor.length === 0) html += "<p>Bu hafta genel değeri değişen oyuncu yok.</p>";
