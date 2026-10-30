@@ -109,23 +109,6 @@ function sezonMaciBitir(s) {
   sezonMacRaporu(rakip, s, odul, digerleri);
 }
 
-function sezonMacRaporu(B, s, odul, digerleri) {
-  const kazandi = s.sa > s.sb;
-  let html = "<h2>Maç Raporu</h2>";
-  html += '<div class="bilgi-kutusu"><b>' + kariyer.takimAdi + " " + s.sa + " - " + s.sb + " " + B.ad + "</b><br>";
-  html += kazandi ? "Kazandın!" : "Kaybettin.";
-  html += s.uzatma ? " (Uzatma oynandı)" : "";
-  html += "<br>Harita: <b>" + s.harita + "</b>";
-  if (s.not) html += "<br>" + s.not;
-  html += "<br>Kazanç: <b>+" + para(odul) + "</b></div>";
-  html += "<h2>Haftanın Diğer Maçları</h2>";
-  digerleri.forEach(function (d) { html += "<p>" + d + "</p>"; });
-  html += istTablo(kariyer.takimAdi, s.istA) + istTablo(B.ad, s.istB);
-  html += '<button class="buton" onclick="tabloEkrani()">Puan Tablosu</button>';
-  html += '<button class="buton ikincil" onclick="kariyerEkrani()">Kariyere Dön</button>';
-  uygulama.innerHTML = html;
-}
-
 function tabloEkrani() {
   sezonHazirla();
   const sz = kariyer.sezon;
