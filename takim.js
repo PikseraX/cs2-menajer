@@ -2,12 +2,13 @@ function kadroOzet(oyuncular, strateji) {
   const y = oyuncular.reduce(function (s, o) { return s + o.yas; }, 0) / oyuncular.length;
   const g = oyuncular.reduce(function (s, o) { return s + o.genel; }, 0) / oyuncular.length;
   const rol = oyuncular.reduce(function (s, o) { return s + tarzEtkisi(o); }, 0) / oyuncular.length;
+  const form = formEtkisi(oyuncular);
   let h = '<div class="bilgi-kutusu">';
   if (strateji) {
     const u = stratejiUyumu(oyuncular, strateji);
     h += "Strateji: <b>" + strateji + "</b><br>Strateji uyumu: <b>" + u + "/5</b> (" + etkiYazi(STRATEJI_UYUM_ETKISI[u]) + ")<br>";
   }
-  h += "Ortalama yaş: <b>" + y.toFixed(1) + "</b><br>Ortalama GEN: <b>" + g.toFixed(1) + "</b><br>Rol etkisi: <b>" + (rol > 0 ? "+" : "") + rol.toFixed(1) + "</b></div>";
+  h += "Ortalama yaş: <b>" + y.toFixed(1) + "</b><br>Ortalama GEN: <b>" + g.toFixed(1) + "</b><br>Rol etkisi: <b>" + (rol > 0 ? "+" : "") + rol.toFixed(1) + "</b><br>Form etkisi (moral/yorgunluk): <b>" + (form > 0 ? "+" : "") + form.toFixed(1) + "</b></div>";
   return h;
 }
 
