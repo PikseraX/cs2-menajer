@@ -178,7 +178,7 @@ function banOyna() {
   if (kalan.length !== d.hedef) return;
   banDurum = null;
   if (d.mod === "lig") {
-    sezonMaciOyna(kalan[0]);
+    canliMacHazirla(kalan[0]);
   } else {
     const sen = d.banlar.filter(function (b) { return b.kim === "sen"; }).map(function (b) { return b.harita; }).join(", ");
     const rk = d.banlar.filter(function (b) { return b.kim === "rakip"; }).map(function (b) { return b.harita; }).join(", ");
