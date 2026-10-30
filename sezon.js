@@ -119,6 +119,7 @@ function sezonMacRaporu(B, s, odul, digerleri) {
   html += kazandi ? "Kazandın!" : "Kaybettin.";
   html += s.uzatma ? " (Uzatma oynandı)" : "";
   html += "<br>Harita: <b>" + s.harita + "</b>";
+  if (s.not) html += "<br>" + s.not;
   html += "<br>Kazanç: <b>+" + para(odul) + "</b></div>";
   html += "<h2>Haftanın Diğer Maçları</h2>";
   digerleri.forEach(function (d) { html += "<p>" + d + "</p>"; });
