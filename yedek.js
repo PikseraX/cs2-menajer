@@ -50,6 +50,7 @@ function yedekSat(i) {
   const o = y[i];
   if (!confirm(o.ad + " satılacak: +" + para(satisFiyati(o)) + ". Onaylıyor musun?")) return;
   kariyer.butce += satisFiyati(o);
+  maliIsle("gelir", "transfer", satisFiyati(o));
   y.splice(i, 1);
   serbestHazirla();
   kariyer.serbest.push(o);
