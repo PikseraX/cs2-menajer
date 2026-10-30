@@ -47,8 +47,9 @@ function antrenmanUygula() {
 }
 
 function yasKontrol() {
-  const h = kariyer.hafta || 1;
-  if (h % 52 === 1 && h > 1) {
+  const sz = kariyer.sezon;
+  if (sz && sz.bitti && !sz.yaslandi) {
+    sz.yaslandi = true;
     kariyer.oyuncular.forEach(function (o) { o.yas++; });
     if (kariyer.serbest) kariyer.serbest.forEach(function (o) { o.yas++; });
     dunya.forEach(function (t) { t.oyuncular.forEach(function (o) { o.yas++; }); });
