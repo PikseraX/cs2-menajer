@@ -100,7 +100,9 @@ function sezonMaciOyna(harita) {
     }
   });
   const kazandi = benim.s.sa > benim.s.sb;
-  const odul = kazandi ? 20000 : 5000;
+  const odul = macOdulu(kazandi);
+  kariyer.butce += odul;
+  maliIsle("gelir", "mac", odul);
   kariyer.butce += odul;
   if (kazandi) { kariyer.galibiyet = (kariyer.galibiyet || 0) + 1; }
   else { kariyer.maglubiyet = (kariyer.maglubiyet || 0) + 1; }
@@ -149,6 +151,7 @@ function sezonuKapat() {
   const sira = ligSirasi.indexOf(0);
   const odul = Math.round(SEZON_ODULLERI[sira] * LIG_ODUL_CARPANI[kariyer.ligNo - 1]);
   kariyer.butce += odul;
+  maliIsle("gelir", "sezon", odul);
   const mvp = sezonEnIyi(sz.no);
   const sonuc = ligSezonSonu(ligSirasi);
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1, mvp: mvp, lig: sonuc.eski, yeniLig: sonuc.yeni });
