@@ -29,12 +29,13 @@ function fiksturUret(n) {
 function yeniSezon(no) {
   const tablo = [];
   for (let i = 0; i < LIG_TAKIM_SAYISI; i++) tablo.push({ o: 0, g: 0, m: 0, puan: 0, rd: 0 });
-  return { no: no, gun: 0, oynandi: false, bitti: false, fikstur: fiksturUret(LIG_TAKIM_SAYISI), tablo: tablo, takimlar: ligTakimlari() };
+  return { no: no, gun: 0, hf: 0, oynandi: false, bitti: false, fikstur: fiksturUret(LIG_TAKIM_SAYISI), tablo: tablo, takimlar: ligTakimlari() };
 }
 
 function sezonHazirla() {
   ligHazirla();
   if (!kariyer.sezon) { kariyer.sezon = yeniSezon(1); kaydet(); }
+  if (kariyer.sezon.hf === undefined) { kariyer.sezon.hf = kariyer.sezon.gun * 2; kaydet(); }
 }
 
 function siralama() {
@@ -61,15 +62,19 @@ function sezonKutusu() {
   if (sz.bitti) {
     h += "Bitti<br>Sıralaman: <b>" + (siralama().indexOf(0) + 1) + ".</b></div>";
     h += '<button class="buton" onclick="sezonuKapat()">Ödülü Al, Yeni Sezonu Başlat</button>';
-  } else {
+  } else if (sz.hf % 2 === 0) {
     const m = sz.fikstur[sz.gun].find(function (x) { return x[0] === 0 || x[1] === 0; });
     const rakip = ligTakim(m[0] === 0 ? m[1] : m[0]);
-    h += "Hafta " + (sz.gun + 1) + "/" + sz.fikstur.length;
+    h += "Hafta " + (sz.hf + 1) + "/" + (sz.fikstur.length * 2);
+    h += "<br><b>LİG HAFTASI</b> (maç " + (sz.gun + 1) + "/" + sz.fikstur.length + ")";
     h += "<br>Rakip: <b>" + rakip.ad + "</b> (Güç " + Math.round(ortGuc(rakip.oyuncular)) + ")";
     if (sz.oynandi) h += "<br>Bu haftanın maçı oynandı.";
     h += "</div>";
-    if (!sz.oynandi) { h += '<button class="buton" onclick="hazirlikEkrani()">Maç Hazırlığı</button>'; }
+    if (!sz.oynandi) { h += '<button class="buton" onclick="hazirlikEkrani()">Maçı Oyna</button>'; }
     else { h += '<button class="buton" onclick="haftaGec()">Haftayı Bitir</button>'; }
+  } else {
+    h += "Hafta " + (sz.hf + 1) + "/" + (sz.fikstur.length * 2) + "<br><b>TURNUVA HAFTASI</b>";
+    h += turnuvaHaftaKutusu();
   }
   h += '<button class="buton ikincil" onclick="tabloEkrani()">Puan Tablosu</button>';
   return h;
@@ -148,6 +153,7 @@ function sezonuKapat() {
   const sonuc = ligSezonSonu(ligSirasi);
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1, mvp: mvp, lig: sonuc.eski, yeniLig: sonuc.yeni });
   siralamaGuncelle(sonuc.prim, sonuc.benPrim);
+  kariyer.turnuva = null;
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
   kaydet();
