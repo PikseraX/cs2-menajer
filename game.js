@@ -184,8 +184,11 @@ function kariyerEkrani() {
 function kadroEkrani() {
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Kadro</h2>';
   html += kadroOzet(kariyer.oyuncular, kariyer.strateji) + tabloHtml(kariyer.oyuncular);
+  html += formTablosu(kariyer.oyuncular, "Moral ve Yorgunluk");
+  if (yedekListe().length > 0) html += formTablosu(yedekListe(), "Yedek Moral ve Yorgunluk");
   html += haritaTablosu({ oyuncular: kariyer.oyuncular });
   html += '<button class="buton" onclick="stratejiEkrani()">Strateji Belirle</button>';
+  html += '<button class="buton ikincil" onclick="yedekEkrani()">Yedek Kadro (' + yedekListe().length + "/" + YEDEK_MAX + ")</button>";
   html += '<button class="buton ikincil" onclick="akademiEkrani()">Akademi ve Scout</button>';
   html += '<button class="buton" onclick="haritaAntrenmanEkrani()">Harita Antrenmanı</button>';
   html += '<button class="buton ikincil" onclick="istatistikEkrani()">İstatistikler</button>';
