@@ -7,7 +7,7 @@ const MAC_ODUL_CARPANI = [2, 1.5, 1]; // 1. Lig, 2. Lig, 3. Lig
 const BORC_FAIZ = 0.02;
 
 const GELIR_ADLARI = { mac: "Maç ödülü", sezon: "Sezon sonu ödülü", turnuva: "Turnuva ödülü", sponsor: "Sponsor", transfer: "Oyuncu satışı / takas kazancı" };
-const GIDER_ADLARI = { maas: "Maaşlar", transfer: "Transfer ücretleri", yenileme: "Sözleşme yenileme", faiz: "Borç faizi", akademi: "Akademi ve scout" };
+const GIDER_ADLARI = { maas: "Maaşlar", transfer: "Transfer ücretleri", yenileme: "Sözleşme yenileme", faiz: "Borç faizi", akademi: "Akademi ve scout", personel: "Personel" };
 
 function sponsorGeliri() {
   return SPONSOR_TABAN + (101 - benimDunyaSirasi()) * SPONSOR_SIRA_CARPANI;
