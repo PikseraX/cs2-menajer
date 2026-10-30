@@ -1,6 +1,6 @@
 // Rakiplerin başlangıç hâli (yeni kariyer her zaman buradan başlar)
 const DUNYA_ILK = JSON.parse(JSON.stringify(dunya));
-const RAKIP_GELISIM_HAFTA = 12;
+const RAKIP_GELISIM_HAFTA = 24;
 const TOPLAM_TAKIM = 100; // senin takımın dahil
 const GUC_MIN = 35;
 const GUC_MAX = 90;
