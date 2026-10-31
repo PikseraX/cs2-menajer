@@ -165,6 +165,7 @@ function kariyerEkrani() {
     rakipleriBagla();
     tarzlariHazirla();
     stratejiHazirla();
+    basarimKontrol();
   let html = '<h1 style="color:' + kariyer.renk + '">' + kariyer.takimAdi + "</h1>";
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Galibiyet: <b>" + (kariyer.galibiyet || 0) + "</b> &nbsp; Mağlubiyet: <b>" + (kariyer.maglubiyet || 0) + "</b></div>";
   html += maasKutusu();
@@ -175,6 +176,7 @@ function kariyerEkrani() {
   html += '<button class="buton ikincil" onclick="turnuvaEkrani()">Turnuvalar</button>';
   html += '<button class="buton ikincil" onclick="ekonomiEkrani()">Finans</button>';
   html += '<button class="buton ikincil" onclick="sponsorEkrani()">Sponsorlar</button>';
+  html += '<button class="buton ikincil" onclick="arsivEkrani()">Kariyer Arşivi</button>';
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
   html += '<button class="buton ikincil" onclick="odakEkrani()">Antrenman Odağı</button>';
