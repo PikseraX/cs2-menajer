@@ -157,11 +157,6 @@ function banEkrani() {
     html += '<div class="bilgi-kutusu">Oynanacak harita' + (kalan.length > 1 ? "lar" : "") + ": <b>" + kalan.join(", ") + "</b></div>";
     html += '<button class="buton" onclick="banOyna()">Maçı Oyna</button>';
   } else {
-    if (an >= 3) {
-      let oneri = kalan[0];
-      kalan.forEach(function (x) { if ((hr[x] - hb[x]) > (hr[oneri] - hb[oneri])) oneri = x; });
-      html += '<div class="bilgi-kutusu" style="border-color:#22c55e">Analist tavsiyesi: <b>' + oneri + "</b> haritasını yasakla (rakibin en avantajlı olduğu harita).</div>";
-    }
     html += "<p>Sıra sende: bir harita yasakla.</p>";
     kalan.forEach(function (ad) {
       let yazi, renk = "";
