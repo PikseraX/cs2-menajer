@@ -65,6 +65,7 @@ function canliKur(harita) {
 function canliP(c) {
   let fark = takimEtkin(c.A.oyuncular, c.A.strateji) - takimEtkin(c.B.oyuncular, c.B.strateji) + c.hf;
   fark += taktikRolBonusu(c.tA, c.A.oyuncular) - taktikRolBonusu(c.tB, c.B.oyuncular) + taktikUstunluk(c.tA, c.tB);
+  fark += analistHazirlik();
   if (c.serA >= 3) fark -= SERI_CEZASI;
   if (c.serB >= 3) fark += SERI_CEZASI;
   if (c.molaTur > 0) fark += MOLA_BONUSU;
@@ -124,13 +125,14 @@ function canliIptal() {
   kariyerEkrani();
 }
 
-function taktikButonlari(fn, acik) {
+function taktikButonlari(fn, acik, rakipT) {
   const c = canli;
+  const rt = rakipT || c.tB;
   let h = "";
   TAKTIKLER.forEach(function (t) {
     const rol = taktikRolBonusu(t, c.A.oyuncular);
     if (acik) {
-      const ust = taktikUstunluk(t, c.tB);
+      const ust = taktikUstunluk(t, rt);
       const net = rol + ust;
       const renk = net > 0 ? ' style="border-color:#22c55e"' : (net < 0 ? ' style="border-color:#ef4444"' : "");
       h += '<button class="takim-butonu"' + renk + ' onclick="' + fn + "('" + t + "')\">" +
@@ -157,17 +159,10 @@ function canliMacHazirla(harita) {
   else html += "<br>Strateji ve taktik: gizli (Analist gerekli)";
   html += "<br>Harita: <b>" + c.harita + "</b>";
   if (an >= 2) html += " (harita farkı " + etkiYazi(c.hf) + ")";
+  if (an >= 3) html += "<br>Analist hazırlığı: <b>+" + analistHazirlik() + " güç</b>";
   html += "</div>";
-  if (an >= 3) {
-    let en = TAKTIKLER[0], enNet = -999;
-    TAKTIKLER.forEach(function (t) {
-      const n = taktikRolBonusu(t, c.A.oyuncular) + taktikUstunluk(t, c.tB);
-      if (n > enNet) { enNet = n; en = t; }
-    });
-    html += '<div class="bilgi-kutusu" style="border-color:#22c55e">Analist tavsiyesi: ilk yarıda <b>' + en + "</b> (net " + etkiYazi(enNet) + ").</div>";
-  }
   html += "<p>İlk yarı için taktik seç." + (an >= 1 ? " Net değer, kadro uyumu ve rakibin taktiğine karşı üstünlüğün toplamıdır." : " Rakibin taktiğini bilmediğin için yalnızca kadro uyumunu görebilirsin.") + "</p>";
-  html += taktikButonlari("canliBasla", an >= 1);
+  html += taktikButonlari("canliBasla", an >= 1, c.tB);
   uygulama.innerHTML = html;
 }
 
@@ -179,14 +174,21 @@ function canliBasla(t) {
 
 function yariEkrani() {
   const c = canli;
+  const an = personelSeviye("analist");
+  const tahmin = aiYariTaktik(c);
+  const rakipT = an >= 3 ? tahmin : c.tB;
   let html = "<h2>Yarı Devre</h2>";
   html += '<div class="bilgi-kutusu"><b>' + c.A.ad + " " + c.sa + " - " + c.sb + " " + c.B.ad + "</b><br>Harita: <b>" + c.harita + "</b><br>Taktikler: sen <b>" + c.tA + "</b> · rakip <b>" + c.tB + "</b><br>Mola hakkın: <b>" + c.mola + "</b><br>Oyuncu değişikliği hakkın: <b>" + c.degisimHak + "</b></div>";
   html += istTablo(c.A.ad, c.aktifA) + istTablo(c.B.ad, c.aktifB);
-  html += "<p>Rakip yapay zekâ: geride kalan Agresif, öne geçen Temkinli oynamaya yatkındır. Bu yüzden net değerler rakibin ilk yarı taktiğine göre hesaplanır.</p>";
-  if (c.degisimHak > 0 && yedekListe().length > 0) {
-  html += '<button class="buton ikincil" onclick="degisimEkrani()">Oyuncu Değişikliği</button>';
+  if (an >= 3) {
+    html += '<div class="bilgi-kutusu" style="border-color:#22c55e">Analist: rakip ikinci yarıda <b>' + tahmin + "</b> oynayacak" + (tahmin !== c.tB ? " (taktik değiştiriyor)" : " (taktik değişmiyor)") + ".</div>";
+  } else {
+    html += "<p>Rakip ikinci yarıda taktik değiştirebilir. Aşağıdaki değerler rakibin ilk yarı taktiğine göre hesaplandı. Analist seviye 3 rakibin ikinci yarı taktiğini önceden gösterir.</p>";
   }
-  html += "<h2>İkinci Yarı Taktiği</h2>" + taktikButonlari("canliYariDevam", true);
+  if (c.degisimHak > 0 && yedekListe().length > 0) {
+    html += '<button class="buton ikincil" onclick="degisimEkrani()">Oyuncu Değişikliği</button>';
+  }
+  html += "<h2>İkinci Yarı Taktiği</h2>" + taktikButonlari("canliYariDevam", true, rakipT);
   uygulama.innerHTML = html;
 }
 
