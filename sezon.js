@@ -106,6 +106,7 @@ function sezonMaciBitir(s) {
   sz.oynandi = true;
   moralMacSonucu(kazandi);
   macIstatistikIsle(s.istA);
+  basinHazirla(kazandi);
   kaydet();
   sezonMacRaporu(rakip, s, odul, digerleri);
 }
@@ -122,6 +123,7 @@ function sezonMacRaporu(B, s, odul, digerleri) {
   html += "<h2>Haftanın Diğer Maçları</h2>";
   digerleri.forEach(function (d) { html += "<p>" + d + "</p>"; });
   html += istTablo(kariyer.takimAdi, s.istA) + istTablo(B.ad, s.istB);
+  if (basinBekliyor()) html += '<button class="buton" onclick="basinEkrani()">Basın Toplantısı</button>';
   html += '<button class="buton" onclick="tabloEkrani()">Puan Tablosu</button>';
   html += '<button class="buton ikincil" onclick="kariyerEkrani()">Kariyere Dön</button>';
   uygulama.innerHTML = html;
