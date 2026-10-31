@@ -195,6 +195,6 @@ function banOyna() {
   } else {
     const sen = d.banlar.filter(function (b) { return b.kim === "sen"; }).map(function (b) { return b.harita; }).join(", ");
     const rk = d.banlar.filter(function (b) { return b.kim === "rakip"; }).map(function (b) { return b.harita; }).join(", ");
-    turnuvaTurOyna(kalan, "Yasaklar: sen " + sen + " · rakip " + rk);
+    canliSeriBasla(kalan, "Yasaklar: sen " + sen + " · rakip " + rk);
   }
 }
