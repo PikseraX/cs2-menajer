@@ -124,16 +124,21 @@ function canliIptal() {
   kariyerEkrani();
 }
 
-function taktikButonlari(fn) {
+function taktikButonlari(fn, acik) {
   const c = canli;
   let h = "";
   TAKTIKLER.forEach(function (t) {
     const rol = taktikRolBonusu(t, c.A.oyuncular);
-    const ust = taktikUstunluk(t, c.tB);
-    const net = rol + ust;
-    const renk = net > 0 ? ' style="border-color:#22c55e"' : (net < 0 ? ' style="border-color:#ef4444"' : "");
-    h += '<button class="takim-butonu"' + renk + ' onclick="' + fn + "('" + t + "')\">" +
-      '<span style="text-align:left">' + t + "<br><small>" + TAKTIK_ACIKLAMA[t] + "<br>Kadro uyumu " + etkiYazi(rol) + " · Taktik üstünlüğü " + etkiYazi(ust) + "</small></span><span>Net " + etkiYazi(net) + "</span></button>";
+    if (acik) {
+      const ust = taktikUstunluk(t, c.tB);
+      const net = rol + ust;
+      const renk = net > 0 ? ' style="border-color:#22c55e"' : (net < 0 ? ' style="border-color:#ef4444"' : "");
+      h += '<button class="takim-butonu"' + renk + ' onclick="' + fn + "('" + t + "')\">" +
+        '<span style="text-align:left">' + t + "<br><small>" + TAKTIK_ACIKLAMA[t] + "<br>Kadro uyumu " + etkiYazi(rol) + " · Taktik üstünlüğü " + etkiYazi(ust) + "</small></span><span>Net " + etkiYazi(net) + "</span></button>";
+    } else {
+      h += '<button class="takim-butonu" onclick="' + fn + "('" + t + "')\">" +
+        '<span style="text-align:left">' + t + "<br><small>" + TAKTIK_ACIKLAMA[t] + "<br>Kadro uyumu " + etkiYazi(rol) + " · Taktik üstünlüğü ? (Analist gerekli)</small></span><span>Net ?</span></button>";
+    }
   });
   return h;
 }
@@ -145,10 +150,24 @@ function canliMacHazirla(harita) {
   if (sz.bitti || sz.oynandi) { kariyerEkrani(); return; }
   canli = canliKur(harita);
   const c = canli;
+  const an = personelSeviye("analist");
   let html = '<button class="geri" onclick="canliIptal()">← Geri</button><h2>Maç Öncesi Taktik</h2>';
-  html += '<div class="bilgi-kutusu">Rakip: <b>' + c.B.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(c.B.oyuncular)) + "</b><br>Strateji: <b>" + c.B.strateji + "</b><br>Rakibin ilk yarı taktiği: <b>" + c.tB + "</b><br>Harita: <b>" + c.harita + "</b> (harita farkı " + etkiYazi(c.hf) + ")</div>";
-  html += "<p>İlk yarı için taktik seç. Net değer, kadro uyumu ve rakibin taktiğine karşı üstünlüğün toplamıdır.</p>";
-  html += taktikButonlari("canliBasla");
+  html += '<div class="bilgi-kutusu">Rakip: <b>' + c.B.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(c.B.oyuncular)) + "</b>";
+  if (an >= 1) html += "<br>Strateji: <b>" + c.B.strateji + "</b><br>Rakibin ilk yarı taktiği: <b>" + c.tB + "</b>";
+  else html += "<br>Strateji ve taktik: gizli (Analist gerekli)";
+  html += "<br>Harita: <b>" + c.harita + "</b>";
+  if (an >= 2) html += " (harita farkı " + etkiYazi(c.hf) + ")";
+  html += "</div>";
+  if (an >= 3) {
+    let en = TAKTIKLER[0], enNet = -999;
+    TAKTIKLER.forEach(function (t) {
+      const n = taktikRolBonusu(t, c.A.oyuncular) + taktikUstunluk(t, c.tB);
+      if (n > enNet) { enNet = n; en = t; }
+    });
+    html += '<div class="bilgi-kutusu" style="border-color:#22c55e">Analist tavsiyesi: ilk yarıda <b>' + en + "</b> (net " + etkiYazi(enNet) + ").</div>";
+  }
+  html += "<p>İlk yarı için taktik seç." + (an >= 1 ? " Net değer, kadro uyumu ve rakibin taktiğine karşı üstünlüğün toplamıdır." : " Rakibin taktiğini bilmediğin için yalnızca kadro uyumunu görebilirsin.") + "</p>";
+  html += taktikButonlari("canliBasla", an >= 1);
   uygulama.innerHTML = html;
 }
 
@@ -165,9 +184,9 @@ function yariEkrani() {
   html += istTablo(c.A.ad, c.aktifA) + istTablo(c.B.ad, c.aktifB);
   html += "<p>Rakip yapay zekâ: geride kalan Agresif, öne geçen Temkinli oynamaya yatkındır. Bu yüzden net değerler rakibin ilk yarı taktiğine göre hesaplanır.</p>";
   if (c.degisimHak > 0 && yedekListe().length > 0) {
-    html += '<button class="buton ikincil" onclick="degisimEkrani()">Oyuncu Değişikliği</button>';
+  html += '<button class="buton ikincil" onclick="degisimEkrani()">Oyuncu Değişikliği</button>';
   }
-  html += "<h2>İkinci Yarı Taktiği</h2>" + taktikButonlari("canliYariDevam");
+  html += "<h2>İkinci Yarı Taktiği</h2>" + taktikButonlari("canliYariDevam", true);
   uygulama.innerHTML = html;
 }
 
