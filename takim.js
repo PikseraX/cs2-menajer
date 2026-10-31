@@ -14,8 +14,12 @@ function kadroOzet(oyuncular, strateji) {
 
 // i = -1: senin takımın, diğerleri dunya[i]
 function takimKadro(i, geri) {
-  const t = i === -1 ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular, strateji: kariyer.strateji } : dunya[i];
+  const ben = i === -1;
+  const t = ben ? { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular, strateji: kariyer.strateji } : dunya[i];
+  const an = personelSeviye("analist");
   let html = '<button class="geri" onclick="' + geri + '">← Geri</button><h2>' + t.ad + "</h2>";
-  html += kadroOzet(t.oyuncular, t.strateji) + tabloHtml(t.oyuncular) + haritaTablosu(t);
+  html += kadroOzet(t.oyuncular, (ben || an >= 1) ? t.strateji : null) + tabloHtml(t.oyuncular);
+  if (ben || an >= 2) html += haritaTablosu(t);
+  else html += "<p>Rakibin strateji ve harita bilgisi için Analist gerekir (strateji: seviye 1, harita puanları: seviye 2).</p>";
   uygulama.innerHTML = html;
 }
