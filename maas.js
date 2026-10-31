@@ -77,6 +77,7 @@ function haftaGec() {
   haritaAntrenmaniUygula(rapor);
   akademiHaftalik(rapor);
   formHaftalik(rapor);
+  sozlesmeKontrol(rapor);
   const yasArtti = yasKontrol();
   kaydet();
   haftaRaporu(g, rapor, yasArtti, sp, faiz);
