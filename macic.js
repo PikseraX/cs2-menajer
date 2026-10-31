@@ -294,4 +294,38 @@ function degisimEkrani() {
 function degisimYedekSec(k) {
   const c = canli;
   const cikan = c.A.oyuncular[k];
-  let html = '<button class="geri" onclick="degisimEkrani()">← Geri</button><h2>' + cikan.ad + " yerine kim girsin?
+  let html = '<button class="geri" onclick="degisimEkrani()">← Geri</button><h2>' + cikan.ad + " yerine kim girsin?</h2>";
+  let bulundu = false;
+  yedekListe().forEach(function (o, j) {
+    if (c.A.oyuncular.indexOf(o) >= 0) return;
+    bulundu = true;
+    html += '<button class="takim-butonu" onclick="degisimYap(' + k + ", " + j + ')"><span>' + o.ad + " (" + o.rol + ")</span><span>GEN " + o.genel + "</span></button>";
+  });
+  if (!bulundu) html += "<p>Girebilecek yedek yok.</p>";
+  uygulama.innerHTML = html;
+}
+
+function degisimYap(k, j) {
+  const c = canli;
+  const giren = yedekListe()[j];
+  const cikan = c.A.oyuncular[k];
+  c.A.oyuncular[k] = giren;
+  const yeni = { o: giren, kill: 0, death: 0 };
+  c.istA.push(yeni);
+  c.aktifA[k] = yeni;
+  c.degisimHak--;
+  c.olaylar.push("Değişiklik: " + cikan.ad + " çıktı, " + giren.ad + " girdi");
+  yariEkrani();
+}
+
+function canliBitir() {
+  const c = canli;
+  const s = { sa: c.sa, sb: c.sb, istA: c.istA, istB: c.istB, uzatma: c.ot, harita: c.harita, not: c.olaylar.join("<br>") };
+  canli = null;
+  if (c.seri) {
+    c.seri.degisimHak = c.degisimHak;
+    canliSeriIsle(c.seri, s);
+  } else {
+    sezonMaciBitir(s);
+  }
+}
