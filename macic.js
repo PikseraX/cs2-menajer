@@ -15,6 +15,7 @@ const MOLA_TUR = 4;
 const DEGISIM_HAKKI = 2;
 
 let canli = null;
+let canliSeri = null;
 
 function taktikRolBonusu(t, oyuncular) {
   const rl = TAKTIK_ROLLERI[t] || [];
@@ -43,22 +44,26 @@ function aiYariTaktik(c) {
   return c.tB;
 }
 
-function canliKur(harita) {
+// rakip verilmezse bu haftanın lig rakibi kullanılır. seri verilirse takım ve değişiklik hakkı seriden gelir.
+function canliKur(harita, rakip, seri) {
   sezonHazirla();
-  const sz = kariyer.sezon;
-  const m = sz.fikstur[sz.gun].find(function (x) { return x[0] === 0 || x[1] === 0; });
-  const B = ligTakim(m[0] === 0 ? m[1] : m[0]);
-  const A = { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular.slice(), strateji: kariyer.strateji };
+  let B = rakip;
+  if (!B) {
+    const sz = kariyer.sezon;
+    const m = sz.fikstur[sz.gun].find(function (x) { return x[0] === 0 || x[1] === 0; });
+    B = ligTakim(m[0] === 0 ? m[1] : m[0]);
+  }
+  const A = seri ? seri.A : { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular.slice(), strateji: kariyer.strateji };
   const istA = A.oyuncular.map(function (o) { return { o: o, kill: 0, death: 0 }; });
   const istB = B.oyuncular.map(function (o) { return { o: o, kill: 0, death: 0 }; });
   return {
-    harita: harita, A: A, B: B,
+    harita: harita, A: A, B: B, seri: seri || null,
     hf: haritaPuani({ oyuncular: kariyer.oyuncular }, harita) - haritaPuani(B, harita),
     sa: 0, sb: 0, istA: istA, istB: istB, aktifA: istA.slice(), aktifB: istB.slice(),
     tA: "Dengeli", tB: aiIlkTaktik(B),
     mola: 1, molaB: 1, molaTur: 0, molaTurB: 0, serA: 0, serB: 0, seriSoruldu: false,
     yariGecti: false, ot: false, otA: 0, otB: 0, otN: 0,
-    degisimHak: DEGISIM_HAKKI, olaylar: []
+    degisimHak: seri ? seri.degisimHak : DEGISIM_HAKKI, olaylar: []
   };
 }
 
@@ -121,8 +126,10 @@ function canliDevam() {
 }
 
 function canliIptal() {
+  const seri = canli && canli.seri;
   canli = null;
-  kariyerEkrani();
+  canliSeri = null;
+  if (seri) turnuvaDevam(); else kariyerEkrani();
 }
 
 function taktikButonlari(fn, acik, rakipT) {
@@ -145,15 +152,68 @@ function taktikButonlari(fn, acik, rakipT) {
   return h;
 }
 
+function seriKutusu(seri) {
+  let h = '<div class="bilgi-kutusu" style="border-color:' + kariyer.renk + '"><b>BO3 Seri: ' + seri.A.ad + " " + seri.mine + " - " + seri.theirs + " " + seri.rakip.ad + "</b><br>Harita " + (seri.idx + 1) + "/3";
+  if (seri.hr.length > 0) h += "<br>Oynanan: " + seri.hr.map(function (x) { return x.h + " " + x.m + "-" + x.t; }).join(", ");
+  return h + "</div>";
+}
+
+// ---------- Lig maçı ----------
 // Harita yasaklama bitince burası çağrılır
 function canliMacHazirla(harita) {
   sezonHazirla();
   const sz = kariyer.sezon;
   if (sz.bitti || sz.oynandi) { kariyerEkrani(); return; }
   canli = canliKur(harita);
+  canliHazirlikEkrani();
+}
+
+// ---------- Turnuva serisi ----------
+function canliSeriBasla(kalan, banYazi) {
+  const tu = kariyer.turnuva;
+  if (!tu) { kariyerEkrani(); return; }
+  const rakip = turnuvaRakibi(tu);
+  if (!rakip) { turnuvaDevam(); return; }
+  canliSeri = {
+    A: { ad: kariyer.takimAdi, oyuncular: kariyer.oyuncular.slice(), strateji: kariyer.strateji },
+    rakip: rakip, liste: karistir(kalan), idx: 0, mine: 0, theirs: 0,
+    hr: [], notlar: [], degisimHak: DEGISIM_HAKKI, kalan: kalan, banYazi: banYazi
+  };
+  canli = canliKur(canliSeri.liste[0], rakip, canliSeri);
+  canliHazirlikEkrani();
+}
+
+function canliSeriSonraki() {
+  const seri = canliSeri;
+  if (!seri) { kariyerEkrani(); return; }
+  canli = canliKur(seri.liste[seri.idx], seri.rakip, seri);
+  canliHazirlikEkrani();
+}
+
+function canliSeriIsle(seri, s) {
+  const kaz = s.sa > s.sb;
+  if (kaz) seri.mine++; else seri.theirs++;
+  seri.hr.push({ h: s.harita, m: s.sa, t: s.sb });
+  seri.notlar.push(s.harita + ": " + s.not);
+  seri.idx++;
+  if (seri.mine >= 2 || seri.theirs >= 2) {
+    const sonuc = { mine: seri.mine, theirs: seri.theirs, hr: seri.hr, not: seri.notlar.join("<br>") };
+    canliSeri = null;
+    turnuvaTurOyna(seri.kalan, seri.banYazi, sonuc);
+    return;
+  }
+  let html = "<h2>Harita Bitti</h2>";
+  html += '<div class="bilgi-kutusu"><b>' + seri.A.ad + " " + s.sa + " - " + s.sb + " " + seri.rakip.ad + "</b><br>" + s.harita + (kaz ? " · Kazandın" : " · Kaybettin") + "<br>Seri: <b>" + seri.mine + " - " + seri.theirs + "</b></div>";
+  html += '<button class="buton" onclick="canliSeriSonraki()">Sonraki Harita: ' + seri.liste[seri.idx] + "</button>";
+  uygulama.innerHTML = html;
+}
+
+// ---------- Ortak ekranlar ----------
+function canliHazirlikEkrani() {
   const c = canli;
   const an = personelSeviye("analist");
   let html = '<button class="geri" onclick="canliIptal()">← Geri</button><h2>Maç Öncesi Taktik</h2>';
+  if (c.seri) html += seriKutusu(c.seri);
   html += '<div class="bilgi-kutusu">Rakip: <b>' + c.B.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(c.B.oyuncular)) + "</b>";
   if (an >= 1) html += "<br>Strateji: <b>" + c.B.strateji + "</b><br>Rakibin ilk yarı taktiği: <b>" + c.tB + "</b>";
   else html += "<br>Strateji ve taktik: gizli (Analist gerekli)";
@@ -178,6 +238,7 @@ function yariEkrani() {
   const tahmin = aiYariTaktik(c);
   const rakipT = an >= 3 ? tahmin : c.tB;
   let html = "<h2>Yarı Devre</h2>";
+  if (c.seri) html += seriKutusu(c.seri);
   html += '<div class="bilgi-kutusu"><b>' + c.A.ad + " " + c.sa + " - " + c.sb + " " + c.B.ad + "</b><br>Harita: <b>" + c.harita + "</b><br>Taktikler: sen <b>" + c.tA + "</b> · rakip <b>" + c.tB + "</b><br>Mola hakkın: <b>" + c.mola + "</b><br>Oyuncu değişikliği hakkın: <b>" + c.degisimHak + "</b></div>";
   html += istTablo(c.A.ad, c.aktifA) + istTablo(c.B.ad, c.aktifB);
   if (an >= 3) {
@@ -223,7 +284,7 @@ function canliMola() {
 function degisimEkrani() {
   const c = canli;
   let html = '<button class="geri" onclick="yariEkrani()">← Geri</button><h2>Oyuncu Değişikliği</h2>';
-  html += "<p>Kalan hak: <b>" + c.degisimHak + "</b>. Değişiklik yalnızca bu maç için geçerlidir. Çıkacak oyuncuyu seç:</p>";
+  html += "<p>Kalan hak: <b>" + c.degisimHak + "</b>. " + (c.seri ? "Değişiklik serinin geri kalanında geçerlidir." : "Değişiklik yalnızca bu maç için geçerlidir.") + " Çıkacak oyuncuyu seç:</p>";
   c.A.oyuncular.forEach(function (o, k) {
     html += '<button class="takim-butonu" onclick="degisimYedekSec(' + k + ')"><span>' + o.ad + " (" + o.rol + ")</span><span>GEN " + o.genel + "</span></button>";
   });
@@ -233,33 +294,4 @@ function degisimEkrani() {
 function degisimYedekSec(k) {
   const c = canli;
   const cikan = c.A.oyuncular[k];
-  let html = '<button class="geri" onclick="degisimEkrani()">← Geri</button><h2>' + cikan.ad + " yerine kim girsin?</h2>";
-  let bulundu = false;
-  yedekListe().forEach(function (o, j) {
-    if (c.A.oyuncular.indexOf(o) >= 0) return;
-    bulundu = true;
-    html += '<button class="takim-butonu" onclick="degisimYap(' + k + ", " + j + ')"><span>' + o.ad + " (" + o.rol + ")</span><span>GEN " + o.genel + "</span></button>";
-  });
-  if (!bulundu) html += "<p>Girebilecek yedek yok.</p>";
-  uygulama.innerHTML = html;
-}
-
-function degisimYap(k, j) {
-  const c = canli;
-  const giren = yedekListe()[j];
-  const cikan = c.A.oyuncular[k];
-  c.A.oyuncular[k] = giren;
-  const yeni = { o: giren, kill: 0, death: 0 };
-  c.istA.push(yeni);
-  c.aktifA[k] = yeni;
-  c.degisimHak--;
-  c.olaylar.push("Değişiklik: " + cikan.ad + " çıktı, " + giren.ad + " girdi");
-  yariEkrani();
-}
-
-function canliBitir() {
-  const c = canli;
-  const s = { sa: c.sa, sb: c.sb, istA: c.istA, istB: c.istB, uzatma: c.ot, harita: c.harita, not: c.olaylar.join("<br>") };
-  canli = null;
-  sezonMaciBitir(s);
-}
+  let html = '<button class="geri" onclick="degisimEkrani()">← Geri</button><h2>' + cikan.ad + " yerine kim girsin?
