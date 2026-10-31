@@ -73,3 +73,70 @@ th:first-child, td:first-child { text-align: left; }
   border-radius: 8px;
   font-size: 17px;
 }
+button { font-family: inherit; cursor: pointer; transition: transform 0.1s, opacity 0.1s; }
+button:active { transform: scale(0.98); opacity: 0.9; }
+#uygulama { padding-bottom: 48px; }
+h2 { font-size: 20px; margin: 20px 0 10px; }
+.bilgi-kutusu { line-height: 1.5; border-radius: 12px; }
+.tablo-kutusu { border-radius: 10px; }
+
+.hero {
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #1f2937, #0f172a);
+}
+.hero h1 { margin: 0 0 4px; font-size: 26px; }
+.hero .alt { font-size: 14px; color: #9ca3af; }
+.metrikler { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.metrik { padding: 10px 8px; text-align: center; background: #0b1220; border: 1px solid #374151; border-radius: 10px; }
+.metrik b { display: block; font-size: 17px; }
+.metrik span { font-size: 12px; color: #9ca3af; }
+
+.uyari {
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  background: #2a1517;
+  border: 1px solid #ef4444;
+  border-radius: 12px;
+}
+
+.menu-izgara { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.menu-kart {
+  position: relative;
+  display: block;
+  min-height: 100px;
+  padding: 14px;
+  text-align: left;
+  font-size: 17px;
+  font-weight: bold;
+  color: #f9fafb;
+  background: linear-gradient(160deg, #1f2937, #111827);
+  border: 1px solid #374151;
+  border-radius: 14px;
+}
+.menu-kart .ikon { display: block; margin-bottom: 6px; font-size: 24px; }
+.menu-kart small { display: block; margin-top: 4px; font-size: 12px; font-weight: normal; color: #9ca3af; }
+
+.menu-satir {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 14px;
+  text-align: left;
+  font-size: 16px;
+  color: #f9fafb;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 12px;
+}
+.menu-satir small { display: block; margin-top: 3px; font-size: 12px; color: #9ca3af; }
+.menu-satir i { font-style: normal; font-size: 24px; color: #6b7280; }
+
+.rozet { font-style: normal; font-size: 13px; font-weight: bold; color: #fff; background: #ef4444; border-radius: 12px; padding: 2px 9px; }
+.alt-baslik { margin: 18px 0 8px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #9ca3af; }
