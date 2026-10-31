@@ -10,7 +10,8 @@ const GELIR_ADLARI = { mac: "Maç ödülü", sezon: "Sezon sonu ödülü", turnu
 const GIDER_ADLARI = { maas: "Maaşlar", transfer: "Transfer ücretleri", yenileme: "Sözleşme yenileme", faiz: "Borç faizi", akademi: "Akademi ve scout", personel: "Personel" };
 
 function sponsorGeliri() {
-  return SPONSOR_TABAN + (101 - benimDunyaSirasi()) * SPONSOR_SIRA_CARPANI;
+  const taban = (SPONSOR_TABAN + (101 - benimDunyaSirasi()) * SPONSOR_SIRA_CARPANI) * 0.5;
+  return Math.round(taban) + sponsorHaftalik();
 }
 
 function macOdulu(kazandi) {
