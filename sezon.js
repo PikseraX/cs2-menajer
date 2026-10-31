@@ -159,6 +159,7 @@ function sezonuKapat() {
   kariyer.turnuva = null;
   serbestYenile();
   sponsorTeklifYenile();
+  teklifUret();
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
   kaydet();
