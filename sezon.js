@@ -151,12 +151,14 @@ function sezonuKapat() {
   const odul = Math.round(SEZON_ODULLERI[sira] * LIG_ODUL_CARPANI[kariyer.ligNo - 1]);
   kariyer.butce += odul;
   maliIsle("gelir", "sezon", odul);
+  sponsorSezonSonu(sira + 1);
   const mvp = sezonEnIyi(sz.no);
   const sonuc = ligSezonSonu(ligSirasi);
   (kariyer.gecmis = kariyer.gecmis || []).push({ sezon: sz.no, sira: sira + 1, mvp: mvp, lig: sonuc.eski, yeniLig: sonuc.yeni });
   siralamaGuncelle(sonuc.prim, sonuc.benPrim);
   kariyer.turnuva = null;
   serbestYenile();
+  sponsorTeklifYenile();
   kariyer.sezon = yeniSezon(sz.no + 1);
   const r = rakipSezonSonu();
   kaydet();
