@@ -176,6 +176,7 @@ function kariyerEkrani() {
   html += '<button class="buton ikincil" onclick="turnuvaEkrani()">Turnuvalar</button>';
   html += '<button class="buton ikincil" onclick="ekonomiEkrani()">Finans</button>';
   html += '<button class="buton ikincil" onclick="sponsorEkrani()">Sponsorlar</button>';
+  if (teklifSayisi() > 0) html += '<button class="buton" onclick="teklifEkrani()">Satın Alma Teklifleri (' + kariyer.teklifler.length + ")</button>";
   html += '<button class="buton ikincil" onclick="arsivEkrani()">Kariyer Arşivi</button>';
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
