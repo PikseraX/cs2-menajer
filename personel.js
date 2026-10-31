@@ -13,7 +13,7 @@ const PERSONEL = {
   },
   analist: {
     ad: "Analist", maas: 1500,
-    etki: ["", "Rakibin stratejisini, ilk yarı taktiğini ve en güçlü haritasını gösterir", "Rakibin tüm harita puanlarını da gösterir", "İkinci yarıda rakibin taktiğini önceden gösterir, lig maçlarında +3 güç hazırlık bonusu verir"]
+    etki: ["", "Rakibin stratejisini, ilk yarı taktiğini ve en güçlü haritasını gösterir", "Rakibin tüm harita puanlarını da gösterir", "İkinci yarıda rakibin taktiğini önceden gösterir, lig ve turnuva maçlarında +3 güç hazırlık bonusu verir"]
   }
 };
 
