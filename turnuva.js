@@ -180,7 +180,7 @@ function seriOyna(A, B, liste) {
 }
 
 // Bir turu oynatır, kazananları ayırır. kalan: senin maçının 3 haritası
-function turVer(tu, kalan, banYazi) {
+function turVer(tu, kalan, banYazi, canliSonuc) {
   const n = tu.tur;
   const satirlar = [];
   const yeni = [];
@@ -188,13 +188,26 @@ function turVer(tu, kalan, banYazi) {
     const a = tu.hayatta[i], b = tu.hayatta[i + 1];
     const A = turnuvaTakim(a), B = turnuvaTakim(b);
     const benim = a === -1 || b === -1;
-    const liste = (benim && kalan) ? karistir(kalan) : karistir(HARITALAR).slice(0, 3);
-    const s = seriOyna(A, B, liste);
+    let s;
+    if (benim && canliSonuc) {
+      const ben = a === -1;
+      s = {
+        a: ben ? canliSonuc.mine : canliSonuc.theirs,
+        b: ben ? canliSonuc.theirs : canliSonuc.mine,
+        haritalar: canliSonuc.hr.map(function (x) { return x.h + " " + (ben ? x.m + "-" + x.t : x.t + "-" + x.m); })
+      };
+    } else {
+      const liste = (benim && kalan) ? karistir(kalan) : karistir(HARITALAR).slice(0, 3);
+      s = seriOyna(A, B, liste);
+    }
     const aKazandi = s.a > s.b;
     yeni.push(aKazandi ? a : b);
     tu.elendi[aKazandi ? b : a] = n;
     let satir = A.ad + " " + s.a + " - " + s.b + " " + B.ad;
-    if (benim) satir = "<b>" + satir + "</b> (" + s.haritalar.join(", ") + ")" + (banYazi ? "<br>" + banYazi : "");
+    if (benim) {
+      satir = "<b>" + satir + "</b> (" + s.haritalar.join(", ") + ")" + (banYazi ? "<br>" + banYazi : "");
+      if (canliSonuc && canliSonuc.not) satir += "<br><small>" + canliSonuc.not + "</small>";
+    }
     satirlar.push(satir);
   }
   tu.hayatta = yeni;
@@ -202,12 +215,12 @@ function turVer(tu, kalan, banYazi) {
   return { tur: n, satirlar: satirlar };
 }
 
-function turnuvaTurOyna(kalan, banYazi) {
+function turnuvaTurOyna(kalan, banYazi, canliSonuc) {
   const tu = kariyer.turnuva;
   if (!tu || tu.sonHafta === kariyer.hafta || kariyer.sezon.hf % 2 !== 1) return;
   const T = turnuvaBul(tu.tid);
   tu.sonHafta = kariyer.hafta;
-  const rapor = [turVer(tu, kalan, banYazi)];
+  const rapor = [turVer(tu, kalan, banYazi, canliSonuc)];
   moralMacSonucu(tu.elendi[-1] === undefined);
   while (tu.hayatta.length > 1 && tu.hayatta.indexOf(-1) < 0) {
     rapor.push(turVer(tu));
