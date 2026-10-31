@@ -25,13 +25,20 @@ function haftalikGider() {
 
 function maasKutusu() {
   sozlesmeHazirla();
-  let h = '<div class="bilgi-kutusu">Hafta: <b>' + (kariyer.hafta || 1) + "</b><br>Haftalık maaş gideri: <b>" + para(haftalikGider()) + "</b>";
+  const hf = kariyer.hafta || 1;
+  let h = '<div class="bilgi-kutusu">Hafta: <b>' + hf + "</b><br>Haftalık maaş gideri: <b>" + para(haftalikGider()) + "</b>";
   if (kariyer.butce < 0) {
     h += '<br><span style="color:#ef4444">Bütçe eksi! Transfer yapamazsın.</span>';
   }
-  const biten = tumKadro().filter(sozlesmeBitti).length;
-  if (biten > 0) {
-    h += '<br><span style="color:#ef4444">' + biten + " oyuncunun sözleşmesi bitti (maaş %25 zamlı).</span>";
+  tumKadro().filter(sozlesmeBitti).forEach(function (o) {
+    h += '<br><span style="color:#ef4444">' + o.ad + ": sözleşmesi bitti, " + (o.bitis + SOZLESME_EK_HAFTA + 1 - hf) + " hafta içinde ayrılır (maaş %25 zamlı).</span>";
+  });
+  const yaklasan = tumKadro().filter(function (o) {
+    const kalan = o.bitis - hf + 1;
+    return kalan > 0 && kalan <= SOZLESME_UYARI_HAFTA;
+  }).map(function (o) { return o.ad + " (" + (o.bitis - hf + 1) + " hf)"; });
+  if (yaklasan.length > 0) {
+    h += '<br><span style="color:#f59e0b">Sözleşmesi yaklaşan: ' + yaklasan.join(", ") + "</span>";
   }
   return h + "</div>";
 }
@@ -77,20 +84,25 @@ function haftaGec() {
 
 function sozlesmeEkrani() {
   sozlesmeHazirla();
+  const hf = kariyer.hafta || 1;
   let html = '<button class="geri" onclick="kariyerEkrani()">← Geri</button><h2>Sözleşmeler</h2>';
-  html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Hafta: <b>" + (kariyer.hafta || 1) + "</b><br>Yenileme: +26 hafta, 4 haftalık maaş ödenir, maaş %15 artar</div>";
+  html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Hafta: <b>" + hf + "</b><br>Yenileme: +26 hafta, 4 haftalık maaş ödenir, maaş %15 artar.<br>Sözleşmesi biten oyuncu " + SOZLESME_EK_HAFTA + " hafta içinde yenilenmezse ayrılır. Morali 40'ın altındaki oyuncu yenilemeyi reddeder.</div>";
   tumKadro().forEach(function (o, i) {
-    const kalan = o.bitis - (kariyer.hafta || 1) + 1;
-    const durum = kalan > 0 ? kalan + " hafta kaldı" : "SÖZLEŞME BİTTİ";
-    const renk = kalan > 0 ? "" : ' style="border-color:#ef4444"';
+    const kalan = o.bitis - hf + 1;
+    const durum = kalan > 0 ? kalan + " hafta kaldı" : "SÖZLEŞME BİTTİ (" + (o.bitis + SOZLESME_EK_HAFTA + 1 - hf) + " hf içinde ayrılır)";
+    const renk = kalan > 0 ? (kalan <= SOZLESME_UYARI_HAFTA ? ' style="border-color:#f59e0b"' : "") : ' style="border-color:#ef4444"';
     const yedek = i >= kariyer.oyuncular.length ? " · Yedek" : "";
-    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span style="text-align:left">' + o.ad + " (" + durum + ")<br>Yaş " + o.yas + " · GEN " + o.genel + " · " + tarzYazi(o) + yedek + "<br>Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
+    html += '<button class="takim-butonu"' + renk + ' onclick="sozlesmeYenile(' + i + ')"><span style="text-align:left">' + o.ad + " (" + durum + ")<br>Yaş " + o.yas + " · GEN " + o.genel + " · " + tarzYazi(o) + yedek + "<br>Moral " + moralOf(o) + " · Maaş: " + para(temelMaas(o)) + "</span><span>Ücret: " + para(temelMaas(o) * 4) + "</span></button>";
   });
   uygulama.innerHTML = html;
 }
 
 function sozlesmeYenile(i) {
   const o = tumKadro()[i];
+  if (moralOf(o) < 40) {
+    alert(o.ad + " yenilemeyi reddetti (moral " + moralOf(o) + "). Morali 40'ın üstüne çıkana kadar sözleşme yenilemez.");
+    return;
+  }
   const baz = temelMaas(o);
   const ucret = baz * 4;
   const yeniMaas = Math.round(baz * 1.15);
