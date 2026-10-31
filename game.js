@@ -174,6 +174,7 @@ function kariyerEkrani() {
   html += '<button class="buton ikincil" onclick="ligEkrani()">Ligler</button>';
   html += '<button class="buton ikincil" onclick="turnuvaEkrani()">Turnuvalar</button>';
   html += '<button class="buton ikincil" onclick="ekonomiEkrani()">Finans</button>';
+  html += '<button class="buton ikincil" onclick="sponsorEkrani()">Sponsorlar</button>';
   html += '<button class="buton" onclick="transferEkrani()">Transfer Piyasası</button>';
   html += '<button class="buton ikincil" onclick="sozlesmeEkrani()">Sözleşmeler</button>';
   html += '<button class="buton ikincil" onclick="odakEkrani()">Antrenman Odağı</button>';
