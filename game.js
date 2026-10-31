@@ -170,6 +170,7 @@ function kariyerEkrani() {
   html += '<div class="bilgi-kutusu">Bütçe: <b>' + para(kariyer.butce) + "</b><br>Galibiyet: <b>" + (kariyer.galibiyet || 0) + "</b> &nbsp; Mağlubiyet: <b>" + (kariyer.maglubiyet || 0) + "</b></div>";
   html += maasKutusu();
   html += sezonKutusu();
+  html += olayKutusu();
   html += '<button class="buton ikincil" onclick="kadroEkrani()">Kadro</button>';
   html += '<button class="buton ikincil" onclick="siralamaEkrani()">Dünya Sıralaması</button>';
   html += '<button class="buton ikincil" onclick="ligEkrani()">Ligler</button>';
