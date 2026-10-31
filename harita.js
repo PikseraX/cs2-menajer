@@ -132,12 +132,20 @@ function hazirlikEkrani() {
 function banEkrani() {
   const d = banDurum;
   if (!d) { kariyerEkrani(); return; }
+  const an = personelSeviye("analist");
   const hb = haritaOf({ oyuncular: kariyer.oyuncular });
   const hr = haritaOf(d.rakip);
   const kalan = banKalan();
   let html = '<button class="geri" onclick="' + d.geri + '">← Geri</button><h2>Harita Yasaklama</h2>';
   html += '<div class="bilgi-kutusu">Rakip: <b>' + d.rakip.ad + "</b><br>Güç: <b>" + Math.round(ortGuc(d.rakip.oyuncular)) + "</b>";
-  if (d.rakip.strateji) html += "<br>Strateji: <b>" + d.rakip.strateji + "</b>";
+  if (an >= 1) {
+    if (d.rakip.strateji) html += "<br>Strateji: <b>" + d.rakip.strateji + "</b>";
+    let en = HARITALAR[0];
+    HARITALAR.forEach(function (x) { if (hr[x] > hr[en]) en = x; });
+    html += "<br>Rakibin en güçlü haritası: <b>" + en + "</b>";
+  } else {
+    html += "<br>Strateji ve harita bilgisi gizli (Analist gerekli)";
+  }
   html += "<br>" + (d.mod === "lig" ? "Her taraf 3 harita yasaklar, kalan 1 haritada maç oynanır." : "Her taraf 2 harita yasaklar, kalan 3 haritada BO3 oynanır (2 harita kazanan turu geçer).") + "</div>";
   html += "<p>Kalan harita: <b>" + kalan.length + "</b> · Hedef: <b>" + d.hedef + "</b></p>";
   if (d.banlar.length > 0) {
@@ -149,11 +157,21 @@ function banEkrani() {
     html += '<div class="bilgi-kutusu">Oynanacak harita' + (kalan.length > 1 ? "lar" : "") + ": <b>" + kalan.join(", ") + "</b></div>";
     html += '<button class="buton" onclick="banOyna()">Maçı Oyna</button>';
   } else {
+    if (an >= 3) {
+      let oneri = kalan[0];
+      kalan.forEach(function (x) { if ((hr[x] - hb[x]) > (hr[oneri] - hb[oneri])) oneri = x; });
+      html += '<div class="bilgi-kutusu" style="border-color:#22c55e">Analist tavsiyesi: <b>' + oneri + "</b> haritasını yasakla (rakibin en avantajlı olduğu harita).</div>";
+    }
     html += "<p>Sıra sende: bir harita yasakla.</p>";
     kalan.forEach(function (ad) {
-      const fark = hb[ad] - hr[ad];
-      const yazi = "Sen " + (hb[ad] > 0 ? "+" : "") + hb[ad] + " · Rakip " + (hr[ad] > 0 ? "+" : "") + hr[ad] + " · Fark " + (fark > 0 ? "+" : "") + fark;
-      const renk = fark > 0 ? ' style="border-color:#22c55e"' : (fark < 0 ? ' style="border-color:#ef4444"' : "");
+      let yazi, renk = "";
+      if (an >= 2) {
+        const fark = hb[ad] - hr[ad];
+        yazi = "Sen " + (hb[ad] > 0 ? "+" : "") + hb[ad] + " · Rakip " + (hr[ad] > 0 ? "+" : "") + hr[ad] + " · Fark " + (fark > 0 ? "+" : "") + fark;
+        renk = fark > 0 ? ' style="border-color:#22c55e"' : (fark < 0 ? ' style="border-color:#ef4444"' : "");
+      } else {
+        yazi = "Sen " + (hb[ad] > 0 ? "+" : "") + hb[ad] + " · Rakip ?";
+      }
       html += '<button class="takim-butonu"' + renk + " onclick=\"banYap('" + ad + "')\"><span style=\"text-align:left\">" + ad + "<br><small>" + yazi + "</small></span><span>Yasakla</span></button>";
     });
   }
