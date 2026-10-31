@@ -1,4 +1,4 @@
-const PERSONEL_TURLERI = ["koc", "fizyo"];
+const PERSONEL_TURLERI = ["koc", "fizyo", "analist"];
 const PERSONEL_MALIYET = [0, 25000, 70000, 160000];
 const FIZYO_DINLENME = [0, 2, 3, 4];
 
@@ -10,6 +10,10 @@ const PERSONEL = {
   fizyo: {
     ad: "Fizyoterapist", maas: 1500,
     etki: ["", "Haftalık dinlenme +2, mağlubiyet moral kaybı 4", "Haftalık dinlenme +3, mağlubiyet moral kaybı 3", "Haftalık dinlenme +4, mağlubiyet moral kaybı 2"]
+  },
+  analist: {
+    ad: "Analist", maas: 1500,
+    etki: ["", "Rakibin stratejisini, ilk yarı taktiğini ve en güçlü haritasını gösterir", "Rakibin tüm harita puanlarını da gösterir", "Harita yasaklama ve taktik tavsiyesi de verir"]
   }
 };
 
